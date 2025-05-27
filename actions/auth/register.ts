@@ -1,7 +1,7 @@
 "use server";
 
 import { createClient } from "@/lib/supabase/server";
-import { IAuthRegister } from "@/types/auth";
+import { IAuthRegister, IResponse } from "@/types/auth";
 
 export async function registerUser({
     email,
@@ -9,9 +9,14 @@ export async function registerUser({
     first_name,
     last_name,
     national_id,
-}: IAuthRegister) {
+}: IAuthRegister): Promise<IResponse> {
     if (!email || !password || !first_name || !last_name || !national_id)
-        return { error: "Todos los campos son obligatorios." };
+        return {
+            error: {
+                message: "Todos los campos son obligatorios.",
+            },
+            success: false,
+        };
 
     const supabase = await createClient();
 

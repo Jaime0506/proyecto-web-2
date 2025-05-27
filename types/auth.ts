@@ -24,3 +24,8 @@ export interface IUser extends IAuthRegister {
 }
 
 export type IErrorRegister = IAuthRegister;
+
+export interface IResponse {
+    error?: { message: string };
+    success?: boolean;
+}

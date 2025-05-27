@@ -7,6 +7,8 @@ import { Eye, EyeClosed, Mail } from "lucide-react";
 import { IErrorRegister } from "@/types/auth";
 import { validateCedula, validateEmail, validatePassword, validateText } from "@/utils/forms/validateForm";
 import { extractDataFormRegister } from "@/utils/forms/extractDataFormRegister";
+import { registerUser } from "@/actions/auth/register";
+import { toast } from "sonner";
 
 export default function RegisterForm() {
     const [isVisible, setIsVisible] = useState(false);
@@ -23,7 +25,7 @@ export default function RegisterForm() {
         if (!formRef.current) return;
         const formData = new FormData(formRef.current);
 
-        const { firstName, lastName, cedula, email, password, confirmPassword} = extractDataFormRegister(formData);
+        const { firstName, lastName, cedula, email, password, confirmPassword } = extractDataFormRegister(formData);
 
         const newErrors: IErrorRegister = {};
 
@@ -36,7 +38,18 @@ export default function RegisterForm() {
         setErrors(newErrors);
 
         if (Object.keys(newErrors).length === 0) {
-            console.log('se pueden enviar');
+            const result = await registerUser({
+                email,
+                password,
+                first_name: firstName,
+                last_name: lastName,
+                national_id: cedula,
+            });
+
+            if (result.error) return toast.error(result.error.message)
+
+            formRef.current.reset();
+            setErrors({});
         }
     };
 
@@ -57,7 +70,6 @@ export default function RegisterForm() {
                     classNames={{ inputWrapper: ["group-data-[focus=true]:border-primary"] }}
                     errorMessage={errors?.first_name}
                     isInvalid={!!errors?.first_name}
-                // onChange={() => onChangeInput("firstName")}
                 />
                 <Input
                     isRequired
@@ -69,7 +81,6 @@ export default function RegisterForm() {
                     classNames={{ inputWrapper: ["group-data-[focus=true]:border-primary"] }}
                     errorMessage={errors?.last_name}
                     isInvalid={!!errors?.last_name}
-                // onChange={() => onChangeInput("lastName")}
                 />
                 <Input
                     isRequired
@@ -81,7 +92,6 @@ export default function RegisterForm() {
                     classNames={{ inputWrapper: ["group-data-[focus=true]:border-primary"] }}
                     errorMessage={errors?.national_id}
                     isInvalid={!!errors?.national_id}
-                // onChange={() => onChangeInput("cedula")}
                 />
                 <Input
                     isRequired
@@ -94,7 +104,6 @@ export default function RegisterForm() {
                     endContent={<Mail />}
                     errorMessage={errors?.email}
                     isInvalid={!!errors?.email}
-                // onChange={() => onChangeInput("email")}
                 />
                 <Input
                     isRequired
@@ -111,7 +120,6 @@ export default function RegisterForm() {
                     }
                     errorMessage={errors?.password}
                     isInvalid={!!errors?.password}
-                // onChange={() => onChangeInput("password")}
                 />
                 <Input
                     isRequired
@@ -128,7 +136,6 @@ export default function RegisterForm() {
                     }
                     errorMessage={errors?.confirm_password}
                     isInvalid={!!errors?.confirm_password}
-                // onChange={() => onChangeInput("confirmPassword")}
                 />
             </section>
 
