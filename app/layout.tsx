@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import "./globals.css";
+import { Toaster } from "sonner";
 
 export const metadata: Metadata = {
     title: "Create Next App",
@@ -14,7 +15,12 @@ export default function RootLayout({
     return (
         <html lang="en" suppressHydrationWarning >
             <body>
-                {children}
+                <main className="flex flex-col min-h-screen">
+                    <section className="flex-1 flex flex-col">
+                        {children}
+                    </section>
+                </main>
+                <Toaster richColors position="bottom-right" />
             </body>
         </html>
     );
