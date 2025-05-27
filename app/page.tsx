@@ -1,15 +1,24 @@
-"use client"
+import { createClient } from '@/lib/supabase/server'
+import { redirect } from 'next/navigation'
 
-import { Input } from "@heroui/react";
+export default async function AppRootRedirect() {
+	const supabase = await createClient()
+	const { data: { user } } = await supabase.auth.getUser()
 
-export default function Home() {
-	return (
-		<div className="grid grid-rows-[20px_1fr_20px] items-center justify-items-center min-h-screen p-8 pb-20 gap-16 sm:p-20 font-[family-name:var(--font-geist-sans)]">
-			<h2 className="bg-red-400">YON ES GAY</h2>
-			<Input
-				variant="bordered">
-				Probajndo
-			</Input>
-		</div>
-	);
+	if (!user) redirect('/auth/login')
+
+	const { data: userProfile } = await supabase
+		.from('users')
+		.select('role')
+		.eq('id', user.id)
+		.single()
+
+	switch (userProfile?.role) {
+		case 'ADMIN':
+			redirect('/admin')
+		case 'EVALUATOR':
+			redirect('/evaluator')
+		default:
+			redirect('/applicant')
+	}
 }
