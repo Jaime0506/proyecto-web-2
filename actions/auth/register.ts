@@ -28,6 +28,7 @@ export async function registerUser({
     if (error) return { error };
 
     const userId = data.user?.id;
+
     if (!userId)
         return { error: { message: "No se pudo obtener el ID de usuario." } };
 

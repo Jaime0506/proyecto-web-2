@@ -1,5 +1,5 @@
 export const LIST_HREFS_ADMIN = [
-    // { name: "Dashboard", path: "/admin/dashboard" },
+    // { name: "Dashboard", path: "/admin/" },
     { name: "Users", path: "/admin/users" },
     // { name: "Settings", path: "/admin/settings" },
 ];
