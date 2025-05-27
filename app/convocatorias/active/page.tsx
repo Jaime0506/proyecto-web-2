@@ -1,6 +1,7 @@
 'use client'
 
 import { useEffect, useState } from 'react'
+import { createClient } from '@/lib/supabase/client'
 
 type ScholarshipCall = {
   id: number
@@ -25,12 +26,13 @@ export default function ActiveCallsPage() {
 
       if (error) {
         console.error('Error al obtener convocatorias:', error)
+        setLoading(false)
         return
       }
 
       const now = new Date()
 
-      const activas = (data || []).filter((call: ScholarshipCall) => {
+      const activas = (data || []).filter((call) => {
         const start = new Date(call.start_date)
         const end = new Date(call.end_date)
         return now >= start && now <= end
