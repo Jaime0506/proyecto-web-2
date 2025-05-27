@@ -1,4 +1,7 @@
+import Image from "next/image";
 import RegisterForm from "../component/RegisterForm";
+
+import Logo from '@/public/assets/register/register.svg'
 
 export default function RegisterPage() {
     return (
@@ -19,7 +22,7 @@ export default function RegisterPage() {
 
             {/* Image section */}
             <div className='flex-1 bg-primary flex items-center justify-center'>
-                <h2 className="text-white font-bold text-xl">Canvis</h2>
+                <Image src={Logo} alt='logo' className='w-2/3' />
             </div>
         </main>
     );
