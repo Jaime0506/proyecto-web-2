@@ -4,7 +4,7 @@ export const validateEmail = (email: string) => {
 };
 
 export const validateText = (text: string) => {
-    const regex = /^[A-Za-z]+$/;
+    const regex = /^[A-Za-z]{4,}$/; // Asegura que el texto tenga al menos 4 letras y no contenga números
     return regex.test(text);
 };
 

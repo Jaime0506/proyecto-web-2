@@ -6,6 +6,7 @@ import Link from "next/link";
 import { Eye, EyeClosed, Mail } from "lucide-react";
 import { IErrorRegister } from "@/types/auth";
 import { validateCedula, validateEmail, validatePassword, validateText } from "@/utils/forms/validateForm";
+import { extractDataFormRegister } from "@/utils/forms/extractDataFormRegister";
 
 export default function RegisterForm() {
     const [isVisible, setIsVisible] = useState(false);
@@ -22,12 +23,7 @@ export default function RegisterForm() {
         if (!formRef.current) return;
         const formData = new FormData(formRef.current);
 
-        const firstName = formData.get('firstName') as string;
-        const lastName = formData.get('lastName') as string;
-        const cedula = formData.get('cedula') as string;
-        const email = formData.get('email') as string;
-        const password = formData.get('password') as string;
-        const confirmPassword = formData.get('confirmPassword') as string;
+        const { firstName, lastName, cedula, email, password, confirmPassword} = extractDataFormRegister(formData);
 
         const newErrors: IErrorRegister = {};
 
@@ -109,7 +105,7 @@ export default function RegisterForm() {
                     radius="none"
                     classNames={{ inputWrapper: ["group-data-[focus=true]:border-primary"] }}
                     endContent={
-                        <button type="button" onClick={toggleIsVisible} className="flex justify-center items-center">
+                        <button type="button" onClick={toggleIsVisible} className="flex justify-center items-center hover:cursor-pointer">
                             {isVisible ? <Eye /> : <EyeClosed />}
                         </button>
                     }
@@ -126,7 +122,7 @@ export default function RegisterForm() {
                     radius="none"
                     classNames={{ inputWrapper: ["group-data-[focus=true]:border-primary"] }}
                     endContent={
-                        <button type="button" onClick={toggleIsConfirmVisible} className="flex justify-center items-center">
+                        <button type="button" onClick={toggleIsConfirmVisible} className="flex justify-center items-center hover:cursor-pointer">
                             {isConfirmVisible ? <Eye /> : <EyeClosed />}
                         </button>
                     }
