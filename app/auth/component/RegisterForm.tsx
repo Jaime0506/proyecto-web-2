@@ -1,27 +1,52 @@
 'use client';
 
 import { Button, Form, Input } from "@heroui/react";
-import React, { useState, useRef } from "react";
+import React, { useState, useRef, useEffect } from "react";
 import Link from "next/link";
 import { Eye, EyeClosed, Mail } from "lucide-react";
+import { IErrorRegister } from "@/types/auth";
+import { validateCedula, validateEmail, validatePassword, validateText } from "@/utils/forms/validateForm";
 
 export default function RegisterForm() {
     const [isVisible, setIsVisible] = useState(false);
     const [isConfirmVisible, setIsConfirmVisible] = useState(false);
-    // const [errors, setErrors] = useState({});
+    const [errors, setErrors] = useState<IErrorRegister>({});
 
-    const formRef = useRef<HTMLFormElement>(null); // Agregamos referencia al formulario
+    const formRef = useRef<HTMLFormElement>(null);
 
     const toggleIsVisible = () => setIsVisible(prev => !prev);
     const toggleIsConfirmVisible = () => setIsConfirmVisible(prev => !prev);
 
-    const onChangeInput = (name: string) => {
-        console.log(name);
-    };
-
     const onSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
+        if (!formRef.current) return;
+        const formData = new FormData(formRef.current);
+
+        const firstName = formData.get('firstName') as string;
+        const lastName = formData.get('lastName') as string;
+        const cedula = formData.get('cedula') as string;
+        const email = formData.get('email') as string;
+        const password = formData.get('password') as string;
+        const confirmPassword = formData.get('confirmPassword') as string;
+
+        const newErrors: IErrorRegister = {};
+
+        if (!validateText(firstName)) newErrors.first_name = 'Nombre inválido';
+        if (!validateText(lastName)) newErrors.last_name = 'Apellido inválido';
+        if (!validateCedula(cedula)) newErrors.national_id = 'Cédula inválida';
+        if (!validateEmail(email)) newErrors.email = 'Email inválido';
+        if (!validatePassword(password, confirmPassword)) newErrors.password = 'Contraseña inválida';
+
+        setErrors(newErrors);
+
+        if (Object.keys(newErrors).length === 0) {
+            console.log('se pueden enviar');
+        }
     };
+
+    useEffect(() => {
+        console.log(errors)
+    }, [errors]);
 
     return (
         <Form ref={formRef} onSubmit={onSubmit} className="flex flex-col gap-7">
@@ -34,9 +59,9 @@ export default function RegisterForm() {
                     variant="bordered"
                     radius="none"
                     classNames={{ inputWrapper: ["group-data-[focus=true]:border-primary"] }}
-                    // errorMessage={errors?.firstName}
-                    // isInvalid={!!errors?.firstName}
-                    onChange={() => onChangeInput("firstName")}
+                    errorMessage={errors?.first_name}
+                    isInvalid={!!errors?.first_name}
+                // onChange={() => onChangeInput("firstName")}
                 />
                 <Input
                     isRequired
@@ -46,9 +71,9 @@ export default function RegisterForm() {
                     variant="bordered"
                     radius="none"
                     classNames={{ inputWrapper: ["group-data-[focus=true]:border-primary"] }}
-                    // errorMessage={errors?.lastName}
-                    // isInvalid={!!errors?.lastName}
-                    onChange={() => onChangeInput("lastName")}
+                    errorMessage={errors?.last_name}
+                    isInvalid={!!errors?.last_name}
+                // onChange={() => onChangeInput("lastName")}
                 />
                 <Input
                     isRequired
@@ -58,9 +83,9 @@ export default function RegisterForm() {
                     variant="bordered"
                     radius="none"
                     classNames={{ inputWrapper: ["group-data-[focus=true]:border-primary"] }}
-                    // errorMessage={errors?.cedula}
-                    // isInvalid={!!errors?.cedula}
-                    onChange={() => onChangeInput("cedula")}
+                    errorMessage={errors?.national_id}
+                    isInvalid={!!errors?.national_id}
+                // onChange={() => onChangeInput("cedula")}
                 />
                 <Input
                     isRequired
@@ -71,9 +96,9 @@ export default function RegisterForm() {
                     radius="none"
                     classNames={{ inputWrapper: ["group-data-[focus=true]:border-primary"] }}
                     endContent={<Mail />}
-                    // errorMessage={errors?.email}
-                    // isInvalid={!!errors?.email}
-                    onChange={() => onChangeInput("email")}
+                    errorMessage={errors?.email}
+                    isInvalid={!!errors?.email}
+                // onChange={() => onChangeInput("email")}
                 />
                 <Input
                     isRequired
@@ -88,9 +113,9 @@ export default function RegisterForm() {
                             {isVisible ? <Eye /> : <EyeClosed />}
                         </button>
                     }
-                    // errorMessage={errors?.password}
-                    // isInvalid={!!errors?.password}
-                    onChange={() => onChangeInput("password")}
+                    errorMessage={errors?.password}
+                    isInvalid={!!errors?.password}
+                // onChange={() => onChangeInput("password")}
                 />
                 <Input
                     isRequired
@@ -105,9 +130,9 @@ export default function RegisterForm() {
                             {isConfirmVisible ? <Eye /> : <EyeClosed />}
                         </button>
                     }
-                    // errorMessage={errors?.confirmPassword}
-                    // isInvalid={!!errors?.confirmPassword}
-                    onChange={() => onChangeInput("confirmPassword")}
+                    errorMessage={errors?.confirm_password}
+                    isInvalid={!!errors?.confirm_password}
+                // onChange={() => onChangeInput("confirmPassword")}
                 />
             </section>
 
