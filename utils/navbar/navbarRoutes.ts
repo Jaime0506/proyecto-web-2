@@ -5,7 +5,7 @@ export interface IRouteObject {
 
 export const LIST_HREFS_ADMIN: IRouteObject[] = [
     // { name: "Dashboard", path: "/admin/" },
-    { name: "Users", path: "/admin/users" },
+    { name: "Usuarios", path: "/admin/users" },
     // { name: "Settings", path: "/admin/settings" },
 ];
 

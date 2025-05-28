@@ -1,4 +1,4 @@
-enum Role {
+export enum Role {
     USER = "USER",
     ADMIN = "ADMIN",
     EVALUATOR = "EVALUATOR",
@@ -15,11 +15,11 @@ export interface IAuthRegister extends IAuth {
     last_name?: string;
     confirm_password?: string;
     email?: string;
+    role?: Role
 }
 
 export interface IUser extends IAuthRegister {
     id?: string;
-    role?: Role;
     status?: boolean;
 }
 
@@ -28,4 +28,8 @@ export type IErrorRegister = IAuthRegister;
 export interface IResponse {
     error?: { message: string };
     success?: boolean;
+}
+
+export interface IResponseRegisterUser extends IResponse {
+    password?: string;
 }
