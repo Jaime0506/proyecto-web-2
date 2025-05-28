@@ -1,9 +1,18 @@
-export const LIST_HREFS_ADMIN = [
+export interface IRouteObject {
+    name: string;
+    path: string;
+}
+
+export const LIST_HREFS_ADMIN: IRouteObject[] = [
     // { name: "Dashboard", path: "/admin/" },
     { name: "Users", path: "/admin/users" },
     // { name: "Settings", path: "/admin/settings" },
 ];
 
-export const LIST_HREFS_APPLICANT = {};
+export const LIST_HREFS_APPLICANT: IRouteObject[] = [
+    { name: "", path: "/applicant" },
+];
 
-export const LIST_HREFS_EVALUATOR = {};
+export const LIST_HREFS_EVALUATOR = [
+    { name: "Convocatorias", path: "/evaluator/sholarship-calls" },
+];
