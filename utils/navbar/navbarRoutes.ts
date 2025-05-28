@@ -5,15 +5,18 @@ export interface IRouteObject {
 
 export const LIST_HREFS_ADMIN: IRouteObject[] = [
     // { name: "Dashboard", path: "/admin/" },
-    { name: "Usuarios", path: "/admin/users" },
+    { name: "Users", path: "/admin/users" },
     // { name: "Settings", path: "/admin/settings" },
 ];
 
 export const LIST_HREFS_APPLICANT: IRouteObject[] = [
     { name: "", path: "/applicant" },
+    { name: "applicant", path: "applicant/convocatorias/active" },
 ];
 
 export const LIST_HREFS_EVALUATOR = [
-    
-    { name: "applicant", path: "applicant/convocatorias/active" },
+    { name: "Dashboard", path: "/evaluator" },
+    { name: "Crear convocatorias", path: "/evaluator/scholarship-calls" },
+    { name: "Convocatorias Activas", path: "/convocatorias/active" },       
 ];
+
