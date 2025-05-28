@@ -23,7 +23,7 @@ export default function ActiveCallsPage() {
 
       const { data, error } = await supabase
         .from('scholarship_calls')
-        .select('id, name, academic_period, start_date, end_date, description, guideline_document')
+        .select('id, name, academic_period, start_date, end_date, description')
 
       if (error) {
         console.error('Error al obtener convocatorias:', error)
@@ -64,16 +64,6 @@ export default function ActiveCallsPage() {
               <p className="text-sm text-gray-500">
                 Desde: {new Date(call.start_date).toLocaleDateString()} — Hasta: {new Date(call.end_date).toLocaleDateString()}
               </p>
-              {call.guideline_document && (
-                <a
-                  href={call.guideline_document}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="text-blue-600 underline mt-2 inline-block"
-                >
-                  Ver documento de la convocatoria
-                </a>
-              )}
             </li>
           ))}
         </ul>
