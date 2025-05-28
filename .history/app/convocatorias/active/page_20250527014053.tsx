@@ -10,7 +10,6 @@ type ScholarshipCall = {
   start_date: string
   end_date: string
   description?: string
-  guideline_document?: string
 }
 
 export default function ActiveCallsPage() {
@@ -19,32 +18,52 @@ export default function ActiveCallsPage() {
 
   useEffect(() => {
     const fetchCalls = async () => {
-      const supabase = createClient()
-
-      const { data, error } = await supabase
-        .from('scholarship_calls')
-        .select('id, name, academic_period, start_date, end_date, description, guideline_document')
-
-      if (error) {
-        console.error('Error al obtener convocatorias:', error)
-        setLoading(false)
-        return
-      }
-
+      // Simular un pequeño delay como si estuviera cargando desde la base de datos
+      await new Promise((res) => setTimeout(res, 500))
+  
+      // Datos quemados (mock)
+      const mockData: ScholarshipCall[] = [
+        {
+          id: 1,
+          name: 'Beca Excelencia Académica',
+          academic_period: '2025-1',
+          start_date: '2025-05-01',
+          end_date: '2025-06-30',
+          description: 'Apoyo económico para estudiantes con excelente rendimiento académico.',
+        },
+        {
+          id: 2,
+          name: 'Beca Deportiva',
+          academic_period: '2025-1',
+          start_date: '2025-04-15',
+          end_date: '2025-05-31',
+          description: 'Convocatoria para estudiantes destacados en deportes.',
+        },
+        {
+          id: 3,
+          name: 'Beca de Investigación',
+          academic_period: '2025-1',
+          start_date: '2025-01-01',
+          end_date: '2025-02-28',
+          description: 'Ya vencida (para prueba).',
+        },
+      ]
+  
       const now = new Date()
-
-      const activas = (data || []).filter((call) => {
+  
+      const activas = mockData.filter((call) => {
         const start = new Date(call.start_date)
         const end = new Date(call.end_date)
         return now >= start && now <= end
       })
-
+  
       setCalls(activas)
       setLoading(false)
     }
-
+  
     fetchCalls()
   }, [])
+  
 
   return (
     <div className="p-6">
@@ -64,16 +83,6 @@ export default function ActiveCallsPage() {
               <p className="text-sm text-gray-500">
                 Desde: {new Date(call.start_date).toLocaleDateString()} — Hasta: {new Date(call.end_date).toLocaleDateString()}
               </p>
-              {call.guideline_document && (
-                <a
-                  href={call.guideline_document}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="text-blue-600 underline mt-2 inline-block"
-                >
-                  Ver documento de la convocatoria
-                </a>
-              )}
             </li>
           ))}
         </ul>

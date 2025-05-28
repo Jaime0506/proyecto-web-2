@@ -14,6 +14,5 @@ export const LIST_HREFS_APPLICANT: IRouteObject[] = [
 ];
 
 export const LIST_HREFS_EVALUATOR = [
-    
-    { name: "Convocatorias", path: "/convocatorias/active" },
+    { name: "Convocatorias", path: "/evaluator/sholarship-calls" },
 ];
