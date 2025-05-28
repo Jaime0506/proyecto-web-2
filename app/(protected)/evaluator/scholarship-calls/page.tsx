@@ -80,9 +80,11 @@ export default function ScholarshipCallsPage() {
                     <thead className="bg-gray-50">
                         <tr>
                             <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Nombre</th>
+                            <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Descripción</th>
                             <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Período Académico</th>
                             <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Fecha de Inicio</th>
                             <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Fecha de Fin</th>
+                            <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Documento</th>
                             <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Acciones</th>
                         </tr>
                     </thead>
@@ -90,9 +92,24 @@ export default function ScholarshipCallsPage() {
                         {scholarshipCalls.map((call) => (
                             <tr key={call.id}>
                                 <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{call.name}</td>
+                                <td className="px-6 py-4 text-sm text-gray-900 max-w-xs truncate">{call.description}</td>
                                 <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{call.academic_period}</td>
                                 <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{formatDate(call.start_date)}</td>
                                 <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{formatDate(call.end_date)}</td>
+                                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                                    {call.guideline_document ? (
+                                        <a
+                                            href={call.guideline_document}
+                                            target="_blank"
+                                            rel="noopener noreferrer"
+                                            className="text-indigo-600 hover:text-indigo-900"
+                                        >
+                                            Ver documento
+                                        </a>
+                                    ) : (
+                                        <span className="text-gray-400">No disponible</span>
+                                    )}
+                                </td>
                                 <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
                                     <div className="flex space-x-3">
                                         <button

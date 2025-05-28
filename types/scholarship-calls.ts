@@ -4,6 +4,8 @@ export interface IScholarshipCall {
     academic_period: string;
     start_date: string;
     end_date: string;
+    description?: string;
+    guideline_document?: string;
     created_by?: string;
 }
 
