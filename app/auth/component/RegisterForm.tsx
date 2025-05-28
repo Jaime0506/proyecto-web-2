@@ -51,11 +51,10 @@ export default function RegisterForm() {
             });
 
             setIsLoading(false);
-
-            if (result.error) return toast.error(result.error.message)
-
             formRef.current.reset();
             setErrors({});
+
+            if (result.error) return toast.error(result.error.message)
         }
     };
 
