@@ -30,7 +30,7 @@ export const createUser = async (
         national_id: data.national_id,
         first_name: data.first_name,
         last_name: data.last_name,
-        role: data.role
+        role: data.role,
     });
 
     if (insertError) {
@@ -44,5 +44,36 @@ export const createUser = async (
     return {
         success: true,
         password: passwordGenerated,
+    };
+};
+
+export const deleteUser = async (id_user: string) => {
+    const supabase = await createAdminClient();
+    const { error } = await supabase.auth.admin.updateUserById(id_user, {
+        user_metadata: {
+            disabled: true,
+        },
+    });
+
+    if (error) {
+        return {
+            error: {
+                message: error.message,
+            },
+        };
+    }
+
+    const { error: deleteError } = await supabase.from("users").update({ deleted: true }).eq("id", id_user);
+
+    if (deleteError) {
+        return {
+            error: {
+                message: deleteError.message,
+            },
+        };
+    }
+
+    return {
+        success: true,
     };
 };

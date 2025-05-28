@@ -1,5 +1,6 @@
 "use server";
 
+import { createAdminClient } from "@/lib/supabase/admin/serverAdmin";
 import { createClient } from "@/lib/supabase/server";
 import { IAuthRegister, IResponse } from "@/types/auth";
 
@@ -39,7 +40,14 @@ export async function registerUser({
         national_id,
     });
 
-    if (insertError) return { error: insertError };
+    if (insertError) {
+        await supabase.auth.signOut();
+        
+        const supabaseAdmin = await createAdminClient();
+        await supabaseAdmin.auth.admin.deleteUser(userId);
+
+        return { error: insertError };
+    }
 
     return { success: true };
 }

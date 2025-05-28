@@ -1,7 +1,7 @@
 "use server";
 
 import { createClient } from "@/lib/supabase/server";
-import { IAuth, IResponse } from "@/types/auth";
+import { IAuth, IResponse, IUserDB } from "@/types/auth";
 
 export async function loginUser({
     email,
@@ -17,13 +17,42 @@ export async function loginUser({
 
     const supabase = await createClient();
 
-    const { error } = await supabase.auth.signInWithPassword({
+    const { data, error } = await supabase.auth.signInWithPassword({
         email,
         password,
     });
 
     if (error) return { error };
-    
+
+    if (data.user.user_metadata.disabled) {
+        await supabase.auth.signOut();
+
+        return {
+            error: {
+                message: "Su usuario no existe, Intente con otro",
+            },
+        };
+    }
+
+    const { data: user, error: ErrorTableUsers } = await supabase
+        .from("users")
+        .select("*")
+        .eq("id", data.user.id)
+        .single();
+
+    if (ErrorTableUsers) return { error: ErrorTableUsers };
+
+    const currentUser = user as IUserDB;
+
+    if (currentUser.deleted) {
+        await supabase.auth.signOut();
+
+        return {
+            error: {
+                message: "Su usuario se encuentra inactivo, contate con el administrador",
+            },
+        };
+    }
 
     return { success: true };
 }

@@ -3,7 +3,7 @@ import UsersPageWrapper from "../components/UsersPageWrapper"
 
 export default async function AdminUserPage() {
     const supabase = await createClient()
-    const { data, error } = await supabase.from('users').select('*')
+    const { data, error } = await supabase.from('users').select('*').eq("deleted", false)
 
     if (error) {
         return (

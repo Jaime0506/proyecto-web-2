@@ -23,6 +23,10 @@ export interface IUser extends IAuthRegister {
     status?: boolean;
 }
 
+export interface IUserDB extends IUser {
+    deleted?: boolean;
+}
+
 export type IErrorRegister = IAuthRegister;
 
 export interface IResponse {
