@@ -63,7 +63,7 @@ export const deleteUser = async (id_user: string) => {
         };
     }
 
-    const { error: deleteError } = await supabase.from("users").update({ id_deleted: true }).eq("id", id_user);
+    const { error: deleteError } = await supabase.from("users").update({ deleted: true }).eq("id", id_user);
 
     if (deleteError) {
         return {
