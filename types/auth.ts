@@ -24,7 +24,7 @@ export interface IUser extends IAuthRegister {
 }
 
 export interface IUserDB extends IUser {
-    id_deleted?: boolean;
+    deleted?: boolean;
 }
 
 export type IErrorRegister = IAuthRegister;

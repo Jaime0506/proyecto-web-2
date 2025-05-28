@@ -97,7 +97,6 @@ export default function CustomModal({ isOpen, onOpenChange, modalContent }: Cust
         onDeleteModalOpen()
 
         onOpenChange()
-        handleOnReload()
     }
 
     const contentToRender = () => {
@@ -234,6 +233,7 @@ export default function CustomModal({ isOpen, onOpenChange, modalContent }: Cust
                 isOpen={isDeleteModalOpen}
                 onOpenChange={onDeleteModalChange}
                 id_user={modalContent.user.id!}
+                handleOnReload={handleOnReload}
             />
         </>
     )

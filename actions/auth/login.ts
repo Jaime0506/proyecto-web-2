@@ -44,7 +44,7 @@ export async function loginUser({
 
     const currentUser = user as IUserDB;
 
-    if (currentUser.id_deleted) {
+    if (currentUser.deleted) {
         await supabase.auth.signOut();
 
         return {

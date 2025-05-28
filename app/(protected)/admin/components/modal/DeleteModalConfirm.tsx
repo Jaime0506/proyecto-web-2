@@ -9,9 +9,10 @@ interface DeleteModalProps {
     isOpen: boolean;
     onOpenChange: () => void;
     id_user: string;
+    handleOnReload: () => void;
 }
 
-export default function DeleteModalConfirm({ isOpen, onOpenChange, id_user }: DeleteModalProps) {
+export default function DeleteModalConfirm({ isOpen, onOpenChange, id_user, handleOnReload }: DeleteModalProps) {
     const [isDeleting, setIsDeleting] = useState(false);
 
     const handleDelete = async () => {
@@ -25,6 +26,7 @@ export default function DeleteModalConfirm({ isOpen, onOpenChange, id_user }: De
         
         setIsDeleting(false);
         onOpenChange();
+        handleOnReload()
     };
 
     return (
