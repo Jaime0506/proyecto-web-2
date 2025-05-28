@@ -4,21 +4,49 @@ import { Button, Form, Input } from "@heroui/react";
 import { useState } from "react";
 import { Eye, EyeClosed, Mail } from "lucide-react";
 import Link from "next/link";
+import { IAuth } from "@/types/auth";
+import { loginUser } from "@/actions/auth/login";
+import { toast } from "sonner";
 
 export default function LoginForm() {
 
     const [isVisible, setIsVisible] = useState(false);
-    // const [errors, setErrors] = useState<>();
-    // const [errorMessage, setErrorMessage] = useState<string | null>();
+    const [errors, setErrors] = useState<IAuth>({});
 
     const toggleIsVisible = () => setIsVisible(prevState => !prevState);
 
-    const onChangeInput = (name: "email" | "password") => {
-        console.log(name)
+    const validateEmail = (email: string) => {
+        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        return emailRegex.test(email);
+    }
+
+    const validatePassword = (password: string) => {
+        return password.length >= 6;
     }
 
     const onSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
-        e.preventDefault()
+        e.preventDefault();
+        const formData = new FormData(e.currentTarget);
+        const email = formData.get("email") as string;
+        const password = formData.get("password") as string;
+
+        const newErrors: { email?: string; password?: string } = {};
+
+        if (!validateEmail(email)) newErrors.email = 'Email inválido';
+        if (!validatePassword(password)) newErrors.password = 'Contraseña inválida';
+
+        setErrors(newErrors);
+
+        if (Object.keys(newErrors).length === 0) {
+            const result = await loginUser({
+                email,
+                password,
+            });
+
+            if (result.error) return toast.error(result.error.message)
+
+            setErrors({});
+        }
     }
 
     return (
@@ -37,12 +65,9 @@ export default function LoginForm() {
                                 "group-data-[focus=true]:border-primary",
                             ]
                         }}
-                        endContent={
-                            <Mail />
-                        }
-                        // errorMessage={errors?.email}
-                        // isInvalid={!!errors?.email}
-                        onChange={() => onChangeInput("email")}
+                        endContent={<Mail />}
+                        errorMessage={errors?.email}
+                        isInvalid={!!errors?.email}
                     />
                     <Input
                         isRequired
@@ -58,14 +83,11 @@ export default function LoginForm() {
                         }}
                         endContent={
                             <button type="button" onClick={toggleIsVisible} className="flex justify-center items-center">
-                                {isVisible ?
-                                    <Eye /> :
-                                    <EyeClosed />}
+                                {isVisible ? <Eye /> : <EyeClosed />}
                             </button>
                         }
-                        // errorMessage={errors?.password}
-                        // isInvalid={!!errors?.password}
-                        onChange={() => onChangeInput("password")}
+                        errorMessage={errors?.password}
+                        isInvalid={!!errors?.password}
                     />
 
                     <div className="text-default-500">
@@ -80,8 +102,6 @@ export default function LoginForm() {
                         color="primary"
                         radius="none"
                         className="shadow-md"
-                        // disabled={isPending}
-                        // isLoading={isPending}
                     >
                         {"Iniciar sesion"}
                     </Button>
