@@ -13,6 +13,7 @@ import { createUser } from "@/actions/admin/actions";
 
 import DeleteUser from "./actions/DeleteUser";
 import DeleteModalConfirm from "./DeleteModalConfirm";
+import { useRouter } from "next/navigation";
 
 interface CustomModalProps {
     isOpen: boolean
@@ -21,6 +22,8 @@ interface CustomModalProps {
 }
 
 export default function CustomModal({ isOpen, onOpenChange, modalContent }: CustomModalProps) {
+    const router = useRouter()
+
     const [formData, setFormData] = useState<IAuthRegister>({
         national_id: '',
         first_name: '',
@@ -34,6 +37,10 @@ export default function CustomModal({ isOpen, onOpenChange, modalContent }: Cust
 
     const { isOpen: isPasswordModalOpen, onOpen: onPasswordModalOpen, onOpenChange: onPasswordModalOpenChange } = useDisclosure();
     const { isOpen: isDeleteModalOpen, onOpen: onDeleteModalOpen, onOpenChange: onDeleteModalChange } = useDisclosure();
+
+    const handleOnReload = () => {
+        router.refresh()
+    }
 
     const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const { name, value } = e.target;
@@ -82,6 +89,7 @@ export default function CustomModal({ isOpen, onOpenChange, modalContent }: Cust
 
             onOpenChange()
             onPasswordModalOpen()
+            handleOnReload()
         }
     }
 
@@ -89,6 +97,7 @@ export default function CustomModal({ isOpen, onOpenChange, modalContent }: Cust
         onDeleteModalOpen()
 
         onOpenChange()
+        handleOnReload()
     }
 
     const contentToRender = () => {
