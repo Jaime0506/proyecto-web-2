@@ -113,7 +113,7 @@ export default function CustomModal({ isOpen, onOpenChange, modalContent }: Cust
 
         if (modalContent.key === "edit") {
             return (
-                <EditUserContent user={modalContent.user} />
+                <EditUserContent user={modalContent.user} onOpenChange={onOpenChange} />
             )
         }
 

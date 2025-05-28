@@ -1,7 +1,11 @@
 "use server";
 
 import { createAdminClient } from "@/lib/supabase/admin/serverAdmin";
-import { IAuthRegister, IResponseRegisterUser } from "@/types/auth";
+import {
+    IAuthRegister,
+    IAuthUpdate,
+    IResponseRegisterUser,
+} from "@/types/auth";
 import { generateRandomPassword } from "@/utils/generateRandomPassword";
 
 export const createUser = async (
@@ -63,7 +67,31 @@ export const deleteUser = async (id_user: string) => {
         };
     }
 
-    const { error: deleteError } = await supabase.from("users").update({ deleted: true }).eq("id", id_user);
+    const { error: deleteError } = await supabase
+        .from("users")
+        .update({ deleted: true })
+        .eq("id", id_user);
+
+    if (deleteError) {
+        return {
+            error: {
+                message: deleteError.message,
+            },
+        };
+    }
+
+    return {
+        success: true,
+    };
+};
+
+export const updateUser = async (id_user: string, data: IAuthUpdate) => {
+    const supabase = await createAdminClient();
+
+    const { error: deleteError } = await supabase
+        .from("users")
+        .update({ ...data })
+        .eq("id", id_user);
 
     if (deleteError) {
         return {
