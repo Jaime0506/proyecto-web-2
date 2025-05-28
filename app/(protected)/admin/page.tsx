@@ -1,5 +1,7 @@
-export default function page() {
+export default async function AdminUserPage() {
     return (
-        <div>El Admin papu</div>
+        <main className="flex flex-col items-center pt-10 p-16">
+            Soy el admin papu
+        </main>
     )
 }
