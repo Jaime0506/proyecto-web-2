@@ -4,6 +4,8 @@ export enum Role {
     EVALUATOR = "EVALUATOR",
 }
 
+export type IAuthUpdate = Pick<IUser, "status" | "role">;
+
 export interface IAuth {
     email?: string;
     password?: string;
@@ -15,7 +17,7 @@ export interface IAuthRegister extends IAuth {
     last_name?: string;
     confirm_password?: string;
     email?: string;
-    role?: Role
+    role?: Role;
 }
 
 export interface IUser extends IAuthRegister {
@@ -25,6 +27,7 @@ export interface IUser extends IAuthRegister {
 
 export interface IUserDB extends IUser {
     deleted?: boolean;
+    status?: boolean;
 }
 
 export type IErrorRegister = IAuthRegister;

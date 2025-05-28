@@ -49,7 +49,17 @@ export async function loginUser({
 
         return {
             error: {
-                message: "Su usuario se encuentra inactivo, contate con el administrador",
+                message: "Su usuario no existe, Intente con otro",
+            },
+        };
+    }
+
+    if (currentUser.status) {
+        await supabase.auth.signOut();
+
+        return {
+            error: {
+                message: "Su usuario se encuentra desactivado, contacte con el administrador",
             },
         };
     }
