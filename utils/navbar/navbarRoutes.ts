@@ -11,9 +11,12 @@ export const LIST_HREFS_ADMIN: IRouteObject[] = [
 
 export const LIST_HREFS_APPLICANT: IRouteObject[] = [
     { name: "", path: "/applicant" },
+    { name: "applicant", path: "applicant/convocatorias/active" },
 ];
 
-export const LIST_HREFS_EVALUATOR = [    
-    { name: "applicant", path: "applicant/convocatorias/active" },
+export const LIST_HREFS_EVALUATOR = [
+    { name: "Dashboard", path: "/evaluator" },
+    { name: "Crear convocatorias", path: "/evaluator/scholarship-calls" },
+    { name: "Convocatorias Activas", path: "/convocatorias/active" },       
 ];
 
