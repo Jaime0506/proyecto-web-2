@@ -12,7 +12,7 @@ export default function Navbar({ list_routes }: NavbarProps) {
             <header>
                 <nav className='bg-primary p-3 flex justify-center'>
                     <div className='container flex justify-between items-center px-4 py-4'>
-                        <Link href="/admin" className='text-white text-2xl font-bold pb-1.5'>Logo</Link>
+                        <Link href="/" className='text-white text-2xl font-bold pb-1.5'>Logo</Link>
                         <ul className='flex items-center'>
                             {
                                 list_routes.map((data) => (

@@ -13,6 +13,7 @@ export default async function AppRootRedirect() {
 		.eq('id', user.id)
 		.single()
 
+
 	switch (userProfile?.role) {
 		case 'ADMIN':
 			redirect('/admin')

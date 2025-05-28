@@ -10,7 +10,7 @@ export default async function PublicLayout({ children }: { children: React.React
 
     // Si no hay sesión → redirige al login
     if (session) {
-        redirect('/applicant')
+        redirect('/')
     }
 
     return <>{children}</>
