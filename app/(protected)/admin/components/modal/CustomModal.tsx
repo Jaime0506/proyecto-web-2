@@ -7,9 +7,13 @@ import { toast } from "sonner";
 import PasswordModal from "./PasswordModal";
 import { IAuthRegister, IUser, Role } from "@/types/auth";
 import { KeyOpenModal } from "@/utils/tables/keyOpenModal";
-import EditUserContent from "./EditUserContent";
+import EditUserContent from "./actions/EditUserContent";
 import { validateCedula, validateEmail, validateText } from "@/utils/forms/validateForm";
 import { createUser } from "@/actions/admin/actions";
+
+import DeleteUser from "./actions/DeleteUser";
+import DeleteModalConfirm from "./DeleteModalConfirm";
+import { useRouter } from "next/navigation";
 
 interface CustomModalProps {
     isOpen: boolean
@@ -18,6 +22,8 @@ interface CustomModalProps {
 }
 
 export default function CustomModal({ isOpen, onOpenChange, modalContent }: CustomModalProps) {
+    const router = useRouter()
+
     const [formData, setFormData] = useState<IAuthRegister>({
         national_id: '',
         first_name: '',
@@ -30,6 +36,11 @@ export default function CustomModal({ isOpen, onOpenChange, modalContent }: Cust
     const [generatedPassword, setGeneratedPassword] = useState<string>('');
 
     const { isOpen: isPasswordModalOpen, onOpen: onPasswordModalOpen, onOpenChange: onPasswordModalOpenChange } = useDisclosure();
+    const { isOpen: isDeleteModalOpen, onOpen: onDeleteModalOpen, onOpenChange: onDeleteModalChange } = useDisclosure();
+
+    const handleOnReload = () => {
+        router.refresh()
+    }
 
     const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const { name, value } = e.target;
@@ -69,7 +80,7 @@ export default function CustomModal({ isOpen, onOpenChange, modalContent }: Cust
             const result = await createUser(formData);
             setIsLoading(false);
 
-            if (result.error)  return toast.error(result.error.message); 
+            if (result.error) return toast.error(result.error.message);
 
             if (!result.password) return toast.error("No se ha generado la contraseña correctamente")
 
@@ -78,7 +89,15 @@ export default function CustomModal({ isOpen, onOpenChange, modalContent }: Cust
 
             onOpenChange()
             onPasswordModalOpen()
+            handleOnReload()
         }
+    }
+
+    const handleOnDeleteUser = () => {
+        onDeleteModalOpen()
+
+        onOpenChange()
+        handleOnReload()
     }
 
     const contentToRender = () => {
@@ -101,10 +120,7 @@ export default function CustomModal({ isOpen, onOpenChange, modalContent }: Cust
 
         if (modalContent.key === "delete") {
             return (
-                <div className="flex flex-col gap-4">
-                    <h1>Eliminar Usuario</h1>
-                    <p>contenido del delete</p>
-                </div>
+                <DeleteUser user={modalContent.user} />
             )
         }
 
@@ -180,7 +196,7 @@ export default function CustomModal({ isOpen, onOpenChange, modalContent }: Cust
                                 {contentToRender()}
                             </ModalBody>
                             <ModalFooter>
-                                {modalContent.key === "create" ? (
+                                {modalContent.key === "create" && (
                                     <div className="flex gap-2">
                                         <Button color="danger" variant="light" onPress={onClose}>
                                             Cancelar
@@ -189,11 +205,19 @@ export default function CustomModal({ isOpen, onOpenChange, modalContent }: Cust
                                             Crear Usuario
                                         </Button>
                                     </div>
-                                ) : (
-                                    <Button className="btn btn-primary" onPress={onClose}>
-                                        Cerrar
-                                    </Button>
                                 )}
+
+                                {modalContent.key === "delete" && (
+                                    <div className="flex gap-2">
+                                        <Button color="danger" variant="light" onPress={onClose}>
+                                            Cancelar
+                                        </Button>
+                                        <Button color="primary" onPress={handleOnDeleteUser} isLoading={isLoading}>
+                                            Eliminar usuario
+                                        </Button>
+                                    </div>
+                                )}
+
                             </ModalFooter>
                         </>
                     )}
@@ -204,6 +228,12 @@ export default function CustomModal({ isOpen, onOpenChange, modalContent }: Cust
                 isOpen={isPasswordModalOpen}
                 onOpenChange={onPasswordModalOpenChange}
                 password={generatedPassword}
+            />
+
+            <DeleteModalConfirm
+                isOpen={isDeleteModalOpen}
+                onOpenChange={onDeleteModalChange}
+                id_user={modalContent.user.id!}
             />
         </>
     )

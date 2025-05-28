@@ -9,7 +9,7 @@ import { loginUser } from "@/actions/auth/login";
 import { toast } from "sonner";
 
 export default function LoginForm() {
-
+    const [isLoading, setIsLoading] = useState(false);
     const [isVisible, setIsVisible] = useState(false);
     const [errors, setErrors] = useState<IAuth>({});
 
@@ -26,6 +26,9 @@ export default function LoginForm() {
 
     const onSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
+
+        setIsLoading(true);
+
         const formData = new FormData(e.currentTarget);
         const email = formData.get("email") as string;
         const password = formData.get("password") as string;
@@ -42,6 +45,8 @@ export default function LoginForm() {
                 email,
                 password,
             });
+
+            setIsLoading(false);
 
             if (result.error) return toast.error(result.error.message)
 
@@ -98,6 +103,7 @@ export default function LoginForm() {
 
                 <section className="flex gap-5">
                     <Button
+                        isLoading={isLoading}
                         type="submit"
                         color="primary"
                         radius="none"

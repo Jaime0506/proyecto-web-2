@@ -11,6 +11,7 @@ import { registerUser } from "@/actions/auth/register";
 import { toast } from "sonner";
 
 export default function RegisterForm() {
+    const [isLoading, setIsLoading] = useState(false);
     const [isVisible, setIsVisible] = useState(false);
     const [isConfirmVisible, setIsConfirmVisible] = useState(false);
     const [errors, setErrors] = useState<IErrorRegister>({});
@@ -22,8 +23,11 @@ export default function RegisterForm() {
 
     const onSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
+
         if (!formRef.current) return;
         const formData = new FormData(formRef.current);
+
+        setIsLoading(true);
 
         const { firstName, lastName, cedula, email, password, confirmPassword } = extractDataFormRegister(formData);
 
@@ -46,10 +50,11 @@ export default function RegisterForm() {
                 national_id: cedula,
             });
 
-            if (result.error) return toast.error(result.error.message)
-
+            setIsLoading(false);
             formRef.current.reset();
             setErrors({});
+
+            if (result.error) return toast.error(result.error.message)
         }
     };
 
@@ -145,7 +150,7 @@ export default function RegisterForm() {
             </div>
 
             <section className="flex gap-5">
-                <Button type="submit" color="primary" radius="none" className="shadow-md">
+                <Button isLoading={isLoading} type="submit" color="primary" radius="none" className="shadow-md">
                     Registrarse
                 </Button>
             </section>
