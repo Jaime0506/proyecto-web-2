@@ -4,6 +4,7 @@ import { useEffect, useState } from 'react'
 import { useParams, useRouter } from 'next/navigation'
 import { createClient } from '@/lib/supabase/client'
 import { ArrowPathIcon } from '@heroicons/react/24/outline'
+import toast, { Toaster } from 'react-hot-toast'
 
 export default function ClassifyApplicationPage() {
   const { id } = useParams()
@@ -23,6 +24,14 @@ export default function ClassifyApplicationPage() {
 
       if (error) {
         console.error('Error al obtener el estado:', error)
+        toast.error('Error al cargar los datos de la postulación', {
+          style: {
+            background: '#f87171',
+            color: 'white',
+            borderRadius: '8px',
+          },
+          icon: '⚠️',
+        })
       } else if (data) {
         setStatus(data.status?.toLowerCase() || 'in_review')
         setUserId(data.user_id)
@@ -45,9 +54,23 @@ export default function ClassifyApplicationPage() {
 
     if (error) {
       console.error('Error al actualizar estado:', error)
+      toast.error('No se pudo guardar la evaluación', {
+        style: {
+          background: '#f87171',
+          color: 'white',
+          borderRadius: '8px',
+        },
+        icon: '⚠️',
+      })
     } else {
-      alert('Estado actualizado correctamente')
-      router.push('/protected/evaluator/applications')
+      toast.success('Evaluación guardada correctamente', {
+        style: {
+          background: '#4ade80',
+          color: 'white',
+          borderRadius: '8px',
+        },
+        icon: '✅',
+      })
     }
   }
 
@@ -62,11 +85,21 @@ export default function ClassifyApplicationPage() {
 
   return (
     <div className="p-6 max-w-lg mx-auto bg-white rounded-xl shadow-md border">
+      <Toaster
+        position="top-right"
+        toastOptions={{
+          duration: 3000,
+          style: {
+            fontSize: '0.9rem',
+            borderRadius: '8px',
+          },
+        }}
+      />
       <h1 className="text-2xl font-bold text-gray-800 mb-2 text-center">
         Clasificar Postulación #{id}
       </h1>
       <p className="text-center text-gray-600 mb-6">
-        Usuario: <strong>{userId.slice(0, 8)}...</strong>
+        Usuario: <strong>{userId?.slice(0, 8)}...</strong>
       </p>
 
       <form onSubmit={handleUpdate} className="space-y-6">
@@ -81,16 +114,17 @@ export default function ClassifyApplicationPage() {
             className="w-full p-2 border rounded-md"
             required
           >
-            <option value="approved">✅ Aprobada</option>
-            <option value="rejected">❌ Rechazada</option>
-            <option value="in_review">🕐 En revisión</option>
-            <option value="pending">⏳ Pendiente</option>
+            <option value="APPROVED"> Aprobada</option>
+            <option value="REJECTED"> Rechazada</option>
+            <option value="IN_REVIEW"> En revisión</option>
+            <option value="PENDING"> Pendiente</option>
           </select>
         </div>
 
         <button
           type="submit"
-          className="w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2 px-4 rounded-md shadow"
+          className="w-full bg-red-600 hover:bg-red-700 text-white font-semibold py-2 px-4 rounded-md shadow"
+
         >
           Guardar clasificación
         </button>
@@ -98,3 +132,4 @@ export default function ClassifyApplicationPage() {
     </div>
   )
 }
+

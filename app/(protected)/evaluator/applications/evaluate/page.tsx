@@ -113,7 +113,8 @@ export default function EvaluateListPage() {
                   <td className="px-4 py-2 border">{app.reviewed_at ? new Date(app.reviewed_at).toLocaleDateString() : 'Pendiente'}</td>
                   <td className="px-4 py-2 border">
                     <button
-                      className="bg-blue-600 hover:bg-blue-700 text-white px-3 py-1 rounded"
+                      className="bg-red-600 hover:bg-red-700 text-white px-3 py-1 rounded"
+
                       onClick={() => router.push(`/evaluator/applications/evaluate/${app.id}`)}
                     >
                       Evaluar
