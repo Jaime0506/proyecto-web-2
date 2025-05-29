@@ -19,7 +19,5 @@ export const LIST_HREFS_EVALUATOR: IRouteObject[] = [
     { name: "Dashboard", path: "/evaluator" },
     { name: "Crear convocatorias", path: "/evaluator/scholarship-calls" },
     { name: "Postulantes", path: "/evaluator/applications/evaluate" },
-    { name: "Evaluar", path: "/evaluator/applications/classify" },
-
 ];
 

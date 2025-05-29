@@ -8,8 +8,8 @@ import { ArrowPathIcon } from '@heroicons/react/24/outline'
 export default function ClassifyApplicationPage() {
   const { id } = useParams()
   const router = useRouter()
-  const [status, setStatus] = useState('in_review')
-  const [userId, setUserId] = useState('')
+  const [status, setStatus] = useState('en_revision')
+  const [fullName, setFullName] = useState('')
   const [loading, setLoading] = useState(true)
 
   useEffect(() => {
@@ -17,15 +17,15 @@ export default function ClassifyApplicationPage() {
       const supabase = createClient()
       const { data, error } = await supabase
         .from('applications')
-        .select('status, user_id')
+        .select('status, full_name')
         .eq('id', Number(id))
         .single()
 
       if (error) {
         console.error('Error al obtener el estado:', error)
       } else if (data) {
-        setStatus(data.status?.toLowerCase() || 'in_review')
-        setUserId(data.user_id)
+        setStatus(data.status || 'en_revision')
+        setFullName(data.full_name || '')
       }
 
       setLoading(false)
@@ -47,7 +47,7 @@ export default function ClassifyApplicationPage() {
       console.error('Error al actualizar estado:', error)
     } else {
       alert('Estado actualizado correctamente')
-      router.push('/protected/evaluator/applications')
+      router.push('/evaluator/applications')
     }
   }
 
@@ -66,7 +66,7 @@ export default function ClassifyApplicationPage() {
         Clasificar Postulación #{id}
       </h1>
       <p className="text-center text-gray-600 mb-6">
-        Usuario: <strong>{userId.slice(0, 8)}...</strong>
+        Postulante: <strong>{fullName}</strong>
       </p>
 
       <form onSubmit={handleUpdate} className="space-y-6">
@@ -78,13 +78,12 @@ export default function ClassifyApplicationPage() {
             id="status"
             value={status}
             onChange={(e) => setStatus(e.target.value)}
-            className="w-full p-2 border rounded-md"
+            className="mt-1 block w-full rounded-md border border-gray-300 bg-white py-2 px-3 shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
             required
           >
-            <option value="approved">✅ Aprobada</option>
-            <option value="rejected">❌ Rechazada</option>
-            <option value="in_review">🕐 En revisión</option>
-            <option value="pending">⏳ Pendiente</option>
+            <option value="aprobada">✅ Aprobada</option>
+            <option value="rechazada">❌ Rechazada</option>
+            <option value="en_revision">🕐 En revisión</option>
           </select>
         </div>
 
@@ -98,3 +97,4 @@ export default function ClassifyApplicationPage() {
     </div>
   )
 }
+

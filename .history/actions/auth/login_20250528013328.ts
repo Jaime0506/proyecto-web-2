@@ -54,15 +54,15 @@ export async function loginUser({
         };
     }
 
-    //if (currentUser.status) {
-        //await supabase.auth.signOut();
+    if (currentUser.status) {
+        await supabase.auth.signOut();
 
-        //return {
-          //  error: {
-                //message: "Su usuario se encuentra desactivado, contacte con el administrador",
-            //},
-        //};
-    //}
+        return {
+            error: {
+                message: "Su usuario se encuentra desactivado, contacte con el administrador",
+            },
+        };
+    }
 
     return { success: true };
 }
