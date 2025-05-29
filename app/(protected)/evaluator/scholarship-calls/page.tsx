@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { createClient } from '@/lib/supabase/client';
 import { IScholarshipCall } from '@/types/scholarship-calls';
 import { PlusIcon, PencilIcon, TrashIcon, DocumentTextIcon } from '@heroicons/react/24/outline';
@@ -12,11 +12,7 @@ export default function ScholarshipCallsPage() {
     const router = useRouter();
     const supabase = createClient();
 
-    useEffect(() => {
-        fetchScholarshipCalls();
-    }, []);
-
-    const fetchScholarshipCalls = async () => {
+    const fetchScholarshipCalls = useCallback(async () => {
         try {
             const { data, error } = await supabase
                 .from('scholarship_calls')
@@ -30,7 +26,11 @@ export default function ScholarshipCallsPage() {
         } finally {
             setLoading(false);
         }
-    };
+    }, [supabase])
+
+    useEffect(() => {
+        fetchScholarshipCalls();
+    }, [fetchScholarshipCalls]);
 
     const handleDelete = async (id: number) => {
         if (!confirm('¿Estás seguro de que deseas eliminar esta convocatoria?')) return;

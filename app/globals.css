@@ -1,9 +1,43 @@
-@import "tailwindcss";
+/* globals.css */
 
+@import "tailwindcss";
 @plugin './hero.ts';
 @source '../node_modules/@heroui/theme/dist/**/*.{js,ts,jsx,tsx}';
 @custom-variant dark (&:is(.dark *));
 
 @theme {
     --color-primary: #FF0000;
+}
+
+/* 🧱 Scrollbar global personalizado */
+* {
+    scrollbar-width: thin;
+    /* Firefox */
+    scrollbar-color: var(--color-primary) transparent;
+}
+
+::-webkit-scrollbar {
+    width: 6px;
+    height: 6px;
+}
+
+/* Estilo del "pulgar" que se mueve */
+::-webkit-scrollbar-thumb {
+    background-color: var(--color-primary);
+    border-radius: 8px;
+    min-height: 24px;
+    border: 2px solid transparent;
+    /* Espacio interno para que no se vea pegado */
+}
+
+/* Oculta el fondo (track) */
+::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+/* Oculta botones de dirección (funciona en algunos navegadores WebKit) */
+::-webkit-scrollbar-button {
+    display: none;
+    height: 0;
+    width: 0;
 }

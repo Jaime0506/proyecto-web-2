@@ -31,12 +31,3 @@ export interface IUserDB extends IUser {
 }
 
 export type IErrorRegister = IAuthRegister;
-
-export interface IResponse {
-    error?: { message: string };
-    success?: boolean;
-}
-
-export interface IResponseRegisterUser extends IResponse {
-    password?: string;
-}

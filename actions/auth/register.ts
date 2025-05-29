@@ -2,7 +2,8 @@
 
 import { createAdminClient } from "@/lib/supabase/admin/serverAdmin";
 import { createClient } from "@/lib/supabase/server";
-import { IAuthRegister, IResponse } from "@/types/auth";
+import { IAuthRegister } from "@/types/auth";
+import { IResponse } from "@/types/common";
 
 export async function registerUser({
     email,

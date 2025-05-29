@@ -1,7 +1,8 @@
 "use server";
 
 import { createClient } from "@/lib/supabase/server";
-import { IAuth, IResponse, IUserDB } from "@/types/auth";
+import { IAuth, IUserDB } from "@/types/auth";
+import { IResponse } from "@/types/common";
 
 export async function loginUser({
     email,

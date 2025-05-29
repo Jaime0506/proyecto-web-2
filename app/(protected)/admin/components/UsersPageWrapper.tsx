@@ -2,7 +2,7 @@
 
 import { IUser } from "@/types/auth"
 import CustomModal from "./modal/CustomModal"
-import TableUsers from "./table/TableUsers"
+import TableUsers from "./table/users/TableUsers"
 import { useDisclosure } from "@heroui/react"
 import { useState } from "react"
 import { KeyOpenModal } from "@/utils/tables/keyOpenModal"

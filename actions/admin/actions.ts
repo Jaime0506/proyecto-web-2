@@ -3,9 +3,9 @@
 import { createAdminClient } from "@/lib/supabase/admin/serverAdmin";
 import {
     IAuthRegister,
-    IAuthUpdate,
-    IResponseRegisterUser,
+    IAuthUpdate, 
 } from "@/types/auth";
+import { IResponseRegisterUser } from "@/types/common";
 import { generateRandomPassword } from "@/utils/generateRandomPassword";
 
 export const createUser = async (
