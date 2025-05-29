@@ -41,7 +41,7 @@ export default function ScholarshipCallForm({ initialData, mode }: ScholarshipCa
             const fileExt = file.name.split('.').pop();
             const fileName = `${Math.random()}.${fileExt}`;
             
-            const { data, error: uploadError } = await supabase.storage
+            const { error: uploadError } = await supabase.storage
                 .from('scholarshipdocs')
                 .upload(fileName, file, {
                     cacheControl: '3600',
