@@ -9,7 +9,7 @@ import toast, { Toaster } from 'react-hot-toast'
 export default function ClassifyApplicationPage() {
   const { id } = useParams()
   const router = useRouter()
-  const [status, setStatus] = useState('in_review')
+  const [status, setStatus] = useState('IN_REVIEW')
   const [userId, setUserId] = useState('')
   const [loading, setLoading] = useState(true)
 
@@ -33,7 +33,8 @@ export default function ClassifyApplicationPage() {
           icon: '⚠️',
         })
       } else if (data) {
-        setStatus(data.status?.toLowerCase() || 'in_review')
+        // Usar valor tal cual para que coincida con las opciones
+        setStatus(data.status || 'IN_REVIEW')
         setUserId(data.user_id)
       }
 
@@ -114,17 +115,16 @@ export default function ClassifyApplicationPage() {
             className="w-full p-2 border rounded-md"
             required
           >
-            <option value="APPROVED"> Aprobada</option>
-            <option value="REJECTED"> Rechazada</option>
-            <option value="IN_REVIEW"> En revisión</option>
-            <option value="PENDING"> Pendiente</option>
+            <option value="APPROVED">Aprobada</option>
+            <option value="REJECTED">Rechazada</option>
+            <option value="IN_REVIEW">En revisión</option>
+            <option value="PENDING">Pendiente</option>
           </select>
         </div>
 
         <button
           type="submit"
           className="w-full bg-red-600 hover:bg-red-700 text-white font-semibold py-2 px-4 rounded-md shadow"
-
         >
           Guardar clasificación
         </button>
@@ -132,4 +132,3 @@ export default function ClassifyApplicationPage() {
     </div>
   )
 }
-
