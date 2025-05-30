@@ -19,10 +19,10 @@ export default function ClassifyAndScoreApplicationPage() {
   const [status, setStatus] = useState('IN_REVIEW')
   const [userId, setUserId] = useState('')
   const [scores, setScores] = useState({
-    rendimiento_academico: 0,
-    situacion_economica: 0,
-    motivacion: 0,
-    experiencia: 0,
+    rendimiento_academico: null,
+    situacion_economica: null,
+    motivacion: null,
+    experiencia: null,
   })
 
   useEffect(() => {

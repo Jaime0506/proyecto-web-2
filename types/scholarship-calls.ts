@@ -8,6 +8,7 @@ export interface IUserBasic {
     created_at: Date;
 }
 
+
 export interface IScholarshipCall {
     id?: number;
     name: string;
@@ -22,8 +23,6 @@ export interface IScholarshipCall {
 export interface IScholarshipCallWithUser extends IScholarshipCall {
     users?: IUserBasic;
 }
-
-export type IScholarshipCallForm = Omit<IScholarshipCall, "id" | "created_by">;
 
 export interface IScholarshipCallResponse {
     error?: { message: string };
