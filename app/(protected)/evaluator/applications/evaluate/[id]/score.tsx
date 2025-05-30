@@ -84,21 +84,26 @@ export default function ScoringPage() {
 
     const now = new Date().toISOString()
     console.log('Fecha que se va a guardar:', now)
+    console.log('ID de postulación:', id)
 
     // Actualizar la tabla applications con fecha y usuario de revisión
-    const { error: appError } = await supabase
+    const { data: appData, error: appError } = await supabase
       .from('applications')
       .update({
         reviewed_at: now,
         reviewed_by: userId,
       })
       .eq('id', Number(id))
+      .select() // para que retorne los datos actualizados
 
     if (appError) {
       console.error('Error al actualizar aplicación:', appError)
       toast.error('Error al actualizar la postulación')
       return
     }
+
+    console.log('Datos actualizados en applications:', appData)
+    toast.success('Fecha y usuario de revisión actualizados')
 
     // Verificar si ya existen puntajes
     const { data: existing, error: findError } = await supabase
@@ -173,4 +178,3 @@ export default function ScoringPage() {
     </div>
   )
 }
-
