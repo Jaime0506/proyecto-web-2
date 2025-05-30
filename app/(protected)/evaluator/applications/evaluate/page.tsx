@@ -48,7 +48,7 @@ export default function EvaluateListPage() {
     }
 
     fetchCalls()
-  }, [])
+  }, [supabase])
 
   useEffect(() => {
     const fetchApplications = async () => {
@@ -73,7 +73,7 @@ export default function EvaluateListPage() {
     }
 
     fetchApplications()
-  }, [selectedCall])
+  }, [supabase, selectedCall])
 
   return (
     <div className="p-6 max-w-7xl mx-auto">

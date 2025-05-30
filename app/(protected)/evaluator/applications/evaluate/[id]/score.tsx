@@ -106,7 +106,7 @@ export default function ScoringPage() {
     toast.success('Fecha y usuario de revisión actualizados')
 
     // Verificar si ya existen puntajes
-    const { data: existing, error: findError } = await supabase
+    const { data: existing } = await supabase
       .from('application_scores')
       .select('id')
       .eq('application_id', Number(id))

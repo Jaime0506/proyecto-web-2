@@ -14,10 +14,6 @@ export default function ScholarCallsPageWrapper({ data }: ScholarCallsPageWrappe
 
     useEffect(() => { console.log(data) }, [data])
 
-    const handleOnClick = (call: IScholarshipCall) => {
-        console.log(call)
-    }
-
     const handleOnOpenDocument = (e: MouseEvent<HTMLButtonElement, globalThis.MouseEvent>, documentUrl?: string) => {
         if (!documentUrl) return
         e.stopPropagation()
@@ -38,7 +34,7 @@ export default function ScholarCallsPageWrapper({ data }: ScholarCallsPageWrappe
             <main className="p-4">
                 <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 p-4">
                     {data.map((call) => (
-                        <CardScholarShip key={call.id} call={call} handleOnClick={handleOnClick} handleOnOpenDocument={handleOnOpenDocument} />
+                        <CardScholarShip key={call.id} call={call} handleOnOpenDocument={handleOnOpenDocument} />
                     ))}
                 </div>
             </main >

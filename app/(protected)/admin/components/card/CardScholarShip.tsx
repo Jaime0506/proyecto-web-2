@@ -1,16 +1,15 @@
-import { IScholarshipCall } from '@/types/scholarship-calls';
-import { Button, Card, CardBody, CardFooter, CardHeader, Divider } from '@heroui/react';
+import { IScholarshipCallWithUser } from '@/types/scholarship-calls';
+import { Card, CardBody, CardHeader, Divider } from '@heroui/react';
 import { format } from 'date-fns';
 import { CalendarDays, FileText } from 'lucide-react';
 import { MouseEvent } from 'react'
 
 interface CardScholarShipProps {
-    call: IScholarshipCall;
-    handleOnClick: (call: IScholarshipCall) => void;
+    call: IScholarshipCallWithUser;
     handleOnOpenDocument: (e: MouseEvent<HTMLButtonElement, globalThis.MouseEvent>, documentUrl?: string) => void;
 }
 
-export default function CardScholarShip({ call, handleOnClick, handleOnOpenDocument }: CardScholarShipProps) {
+export default function CardScholarShip({ call,  handleOnOpenDocument }: CardScholarShipProps) {
     return (
         <Card key={call.id} className="shadow-md transition-shadow duration-300 p-4 hover:scale-101" >
             <CardHeader className="flex justify-between">
@@ -69,17 +68,6 @@ export default function CardScholarShip({ call, handleOnClick, handleOnOpenDocum
                     </div>
                 )}
             </CardBody>
-            <CardFooter className="flex justify-end">
-                <Button
-                    onPress={() => handleOnClick(call)}
-                    className="px-4 py-2 transition-colors"
-                    color="primary"
-                    variant="bordered"
-                    radius="sm"
-                >
-                    Ver detalles
-                </Button>
-            </CardFooter>
         </Card>
     )
 }
