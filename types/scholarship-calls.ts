@@ -8,7 +8,6 @@ export interface IUserBasic {
     created_at: Date;
 }
 
-
 export interface IScholarshipCall {
     id?: number;
     name: string;
@@ -19,6 +18,8 @@ export interface IScholarshipCall {
     guideline_document?: string;
     created_by?: string;
 }
+
+export type IScholarshipCallForm = Omit<IScholarshipCall, "id" | "created_by">
 
 export interface IScholarshipCallWithUser extends IScholarshipCall {
     users?: IUserBasic;
