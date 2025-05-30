@@ -60,6 +60,7 @@ export default function RegisterForm() {
             if (result.error) return toast.error(result.error.message)
         }
 
+        formRef.current.reset();
         setIsLoading(false);
         router.refresh()
     };
