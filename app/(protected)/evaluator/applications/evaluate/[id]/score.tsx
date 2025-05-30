@@ -63,7 +63,7 @@ export default function ScoringPage() {
     const supabase = createClient()
 
     // Verificar si ya existe
-    const { data: existing, error: findError } = await supabase
+    const { data: existing } = await supabase
       .from('application_scores')
       .select('id')
       .eq('application_id', Number(id))
