@@ -13,6 +13,7 @@ export default function ScholarshipCallDetail({ params }: { params: Promise<{ id
     formData,
     isSubmitting,
     error: formError,
+    hasAlreadyApplied,
     handleSubmit,
     handleFileUpload,
     updateFormData
@@ -98,109 +99,117 @@ export default function ScholarshipCallDetail({ params }: { params: Promise<{ id
           </div>
         )}
 
-        <form onSubmit={handleSubmit} className="space-y-6">
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2 flex items-center gap-2">
-              <UserGroupIcon className="h-5 w-5 text-gray-500" />
-              Estrato Socioeconómico
-            </label>
-            <select
-              value={formData.socioeconomic_stratum}
-              onChange={(e) => updateFormData('socioeconomic_stratum', Number(e.target.value))}
-              className="w-full p-2 border rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-              required
+        {hasAlreadyApplied ? (
+          <div className="p-6 bg-blue-50 border border-blue-200 rounded-lg text-center">
+            <DocumentCheckIcon className="h-12 w-12 text-blue-600 mx-auto mb-4" />
+            <h3 className="text-xl font-semibold text-blue-800 mb-2">Ya has postulado a esta convocatoria</h3>
+            <p className="text-blue-600">Tu aplicación está siendo revisada. Te notificaremos cuando haya una actualización.</p>
+          </div>
+        ) : (
+          <form onSubmit={handleSubmit} className="space-y-6">
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-2 flex items-center gap-2">
+                <UserGroupIcon className="h-5 w-5 text-gray-500" />
+                Estrato Socioeconómico
+              </label>
+              <select
+                value={formData.socioeconomic_stratum}
+                onChange={(e) => updateFormData('socioeconomic_stratum', Number(e.target.value))}
+                className="w-full p-2 border rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                required
+              >
+                {[1, 2, 3, 4, 5, 6].map((stratum) => (
+                  <option key={stratum} value={stratum}>
+                    Estrato {stratum}
+                  </option>
+                ))}
+              </select>
+            </div>
+
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-2 flex items-center gap-2">
+                <AcademicCapIcon className="h-5 w-5 text-gray-500" />
+                Puntaje ICFES
+              </label>
+              <input
+                type="number"
+                value={formData.icfes_result_num || ''}
+                onChange={(e) => updateFormData('icfes_result_num', Number(e.target.value))}
+                className="w-full p-2 border rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                min="0"
+                max="500"
+              />
+            </div>
+
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-2 flex items-center gap-2">
+                <FileText className="h-5 w-5 text-gray-500" />
+                Certificado ICFES (PDF)
+              </label>
+              <div className="relative">
+                <input
+                  type="file"
+                  accept=".pdf"
+                  onChange={(e) => handleFileUpload(e, 'icfes_result_pdf')}
+                  className="w-full p-2 border rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500 file:mr-4 file:py-2 file:px-4 file:rounded-md file:border-0 file:text-sm file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100"
+                />
+                <Upload className="h-5 w-5 text-gray-400 absolute right-3 top-1/2 transform -translate-y-1/2" />
+              </div>
+            </div>
+
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-2 flex items-center gap-2">
+                <FileText className="h-5 w-5 text-gray-500" />
+                Certificado de Estrato (PDF)
+              </label>
+              <div className="relative">
+                <input
+                  type="file"
+                  accept=".pdf"
+                  onChange={(e) => handleFileUpload(e, 'stratum_proof_pdf')}
+                  className="w-full p-2 border rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500 file:mr-4 file:py-2 file:px-4 file:rounded-md file:border-0 file:text-sm file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100"
+                  required
+                />
+                <Upload className="h-5 w-5 text-gray-400 absolute right-3 top-1/2 transform -translate-y-1/2" />
+              </div>
+            </div>
+
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-2 flex items-center gap-2">
+                <FileText className="h-5 w-5 text-gray-500" />
+                Carta de Motivación (PDF)
+              </label>
+              <div className="relative">
+                <input
+                  type="file"
+                  accept=".pdf"
+                  onChange={(e) => handleFileUpload(e, 'motivation_letter_pdf')}
+                  className="w-full p-2 border rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500 file:mr-4 file:py-2 file:px-4 file:rounded-md file:border-0 file:text-sm file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100"
+                  required
+                />
+                <Upload className="h-5 w-5 text-gray-400 absolute right-3 top-1/2 transform -translate-y-1/2" />
+              </div>
+            </div>
+
+            <button
+              type="submit"
+              disabled={isSubmitting}
+              className="w-full bg-blue-600 text-white py-3 px-4 rounded-md hover:bg-blue-700 disabled:bg-blue-300 transition-colors flex items-center justify-center gap-2"
             >
-              {[1, 2, 3, 4, 5, 6].map((stratum) => (
-                <option key={stratum} value={stratum}>
-                  Estrato {stratum}
-                </option>
-              ))}
-            </select>
-          </div>
-
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2 flex items-center gap-2">
-              <AcademicCapIcon className="h-5 w-5 text-gray-500" />
-              Puntaje ICFES
-            </label>
-            <input
-              type="number"
-              value={formData.icfes_result_num || ''}
-              onChange={(e) => updateFormData('icfes_result_num', Number(e.target.value))}
-              className="w-full p-2 border rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-              min="0"
-              max="500"
-            />
-          </div>
-
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2 flex items-center gap-2">
-              <FileText className="h-5 w-5 text-gray-500" />
-              Certificado ICFES (PDF)
-            </label>
-            <div className="relative">
-              <input
-                type="file"
-                accept=".pdf"
-                onChange={(e) => handleFileUpload(e, 'icfes_result_pdf')}
-                className="w-full p-2 border rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500 file:mr-4 file:py-2 file:px-4 file:rounded-md file:border-0 file:text-sm file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100"
-              />
-              <Upload className="h-5 w-5 text-gray-400 absolute right-3 top-1/2 transform -translate-y-1/2" />
-            </div>
-          </div>
-
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2 flex items-center gap-2">
-              <FileText className="h-5 w-5 text-gray-500" />
-              Certificado de Estrato (PDF)
-            </label>
-            <div className="relative">
-              <input
-                type="file"
-                accept=".pdf"
-                onChange={(e) => handleFileUpload(e, 'stratum_proof_pdf')}
-                className="w-full p-2 border rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500 file:mr-4 file:py-2 file:px-4 file:rounded-md file:border-0 file:text-sm file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100"
-                required
-              />
-              <Upload className="h-5 w-5 text-gray-400 absolute right-3 top-1/2 transform -translate-y-1/2" />
-            </div>
-          </div>
-
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2 flex items-center gap-2">
-              <FileText className="h-5 w-5 text-gray-500" />
-              Carta de Motivación (PDF)
-            </label>
-            <div className="relative">
-              <input
-                type="file"
-                accept=".pdf"
-                onChange={(e) => handleFileUpload(e, 'motivation_letter_pdf')}
-                className="w-full p-2 border rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500 file:mr-4 file:py-2 file:px-4 file:rounded-md file:border-0 file:text-sm file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100"
-                required
-              />
-              <Upload className="h-5 w-5 text-gray-400 absolute right-3 top-1/2 transform -translate-y-1/2" />
-            </div>
-          </div>
-
-          <button
-            type="submit"
-            disabled={isSubmitting}
-            className="w-full bg-blue-600 text-white py-3 px-4 rounded-md hover:bg-blue-700 disabled:bg-blue-300 transition-colors flex items-center justify-center gap-2"
-          >
-            {isSubmitting ? (
-              <>
-                <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-white"></div>
-                Enviando...
-              </>
-            ) : (
-              <>
-                <DocumentCheckIcon className="h-5 w-5" />
-                Enviar Postulación
-              </>
-            )}
-          </button>
-        </form>
+              {isSubmitting ? (
+                <>
+                  <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-white"></div>
+                  Enviando...
+                </>
+              ) : (
+                <>
+                  <DocumentCheckIcon className="h-5 w-5" />
+                  Enviar Postulación
+                </>
+              )}
+            </button>
+          </form>
+        )}
       </div>
     </div>
   )

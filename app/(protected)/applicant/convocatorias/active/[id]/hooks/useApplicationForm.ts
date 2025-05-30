@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
 import { scholarshipService, type ApplicationForm } from '../services/scholarshipService'
 
@@ -8,10 +8,30 @@ export function useApplicationForm(callId: string) {
   })
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [error, setError] = useState<string | null>(null)
+  const [hasAlreadyApplied, setHasAlreadyApplied] = useState(false)
   const router = useRouter()
+
+  useEffect(() => {
+    const checkApplication = async () => {
+      try {
+        const hasApplied = await scholarshipService.hasAlreadyApplied(callId)
+        setHasAlreadyApplied(hasApplied)
+        if (hasApplied) {
+          setError('Ya has postulado a esta convocatoria')
+        }
+      } catch (err) {
+        console.error('Error al verificar la aplicación:', err)
+        setError(err instanceof Error ? err.message : 'Error al verificar tu aplicación')
+      }
+    }
+
+    checkApplication()
+  }, [callId])
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
+    if (hasAlreadyApplied) return
+
     setIsSubmitting(true)
     setError(null)
 
@@ -55,6 +75,7 @@ export function useApplicationForm(callId: string) {
     formData,
     isSubmitting,
     error,
+    hasAlreadyApplied,
     handleSubmit,
     handleFileUpload,
     updateFormData
