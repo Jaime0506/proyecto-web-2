@@ -6,6 +6,8 @@ export interface IRouteObject {
 export const LIST_HREFS_ADMIN: IRouteObject[] = [
     { name: "Administracion de usuarios", path: "/admin/users" },
     { name: "Convocatorias", path: "/admin/scholar-ship" },
+    { name: "Aplicaciones", path: "/admin/applications" },
+
 ];
 
 export const LIST_HREFS_APPLICANT: IRouteObject[] = [

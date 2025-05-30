@@ -105,3 +105,23 @@ export const updateUser = async (id_user: string, data: IAuthUpdate) => {
         success: true,
     };
 };
+
+export const getApplications = async () => {
+    const supabase = await createAdminClient();
+    const { data, error } = await supabase
+        .from("applications")
+        .select("*")
+        .order("created_at", { ascending: false });
+
+    if (error) {
+        return {
+            error: {
+                message: error.message,
+            },
+        };
+    }
+
+    return {
+        data,
+    };
+}
