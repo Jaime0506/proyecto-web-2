@@ -12,7 +12,7 @@ export const LIST_HREFS_ADMIN: IRouteObject[] = [
 
 export const LIST_HREFS_APPLICANT: IRouteObject[] = [
     { name: "", path: "/applicant" },
-    { name: "Convocatoria", path: "applicant/convocatorias/active" },
+    { name: "Convocatoria", path: "/applicant/convocatorias/active" },
     
 ];
 
