@@ -3,6 +3,7 @@
 import { useEffect, useState } from 'react'
 import { createClient } from '@/lib/supabase/client'
 import { DocumentTextIcon } from '@heroicons/react/24/outline'
+import Link from 'next/link'
 
 type ScholarshipCall = {
   id: number
@@ -58,28 +59,29 @@ export default function ActiveCallsPage() {
       ) : (
         <div className="grid gap-6 sm:grid-cols-1 md:grid-cols-2">
           {calls.map((call) => (
-            <div
-              key={call.id}
-              className="bg-white shadow-lg rounded-lg p-6 border border-gray-200 hover:shadow-xl transition-shadow"
-            >
-              <h2 className="text-xl font-semibold text-gray-900 mb-2">{call.name}</h2>
-              <p className="text-sm text-gray-600 mb-1">Periodo académico: <strong>{call.academic_period}</strong></p>
-              {call.description && <p className="text-gray-700 mb-2">{call.description}</p>}
-              <p className="text-sm text-gray-500 mb-4">
-                <span className="font-medium">Desde:</span> {new Date(call.start_date).toLocaleDateString()} <br />
-                <span className="font-medium">Hasta:</span> {new Date(call.end_date).toLocaleDateString()}
-              </p>
+            <div key={call.id} className="bg-white shadow-lg rounded-lg p-6 border border-gray-200 hover:shadow-xl transition-shadow">
+              <Link href={`/applicant/convocatorias/active/${call.id}`} className="block">
+                <h2 className="text-xl font-semibold text-gray-900 mb-2">{call.name}</h2>
+                <p className="text-sm text-gray-600 mb-1">Periodo académico: <strong>{call.academic_period}</strong></p>
+                {call.description && <p className="text-gray-700 mb-2">{call.description}</p>}
+                <p className="text-sm text-gray-500 mb-4">
+                  <span className="font-medium">Desde:</span> {new Date(call.start_date).toLocaleDateString()} <br />
+                  <span className="font-medium">Hasta:</span> {new Date(call.end_date).toLocaleDateString()}
+                </p>
+              </Link>
 
               {call.guideline_document && (
-                <a
-                  href={call.guideline_document}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="inline-flex items-center text-blue-600 hover:underline text-sm"
-                >
-                  <DocumentTextIcon className="h-5 w-5 mr-1" />
-                  Ver documento de la convocatoria
-                </a>
+                <div className="mt-4">
+                  <a
+                    href={call.guideline_document}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="inline-flex items-center text-blue-600 hover:underline text-sm"
+                  >
+                    <DocumentTextIcon className="h-5 w-5 mr-1" />
+                    Ver documento de la convocatoria
+                  </a>
+                </div>
               )}
             </div>
           ))}
