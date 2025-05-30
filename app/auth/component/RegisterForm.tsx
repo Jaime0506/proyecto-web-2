@@ -24,8 +24,8 @@ export default function RegisterForm() {
     const toggleIsConfirmVisible = () => setIsConfirmVisible(prev => !prev);
 
     const onSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
-        setErrors({});
         e.preventDefault();
+        setErrors({});
 
         if (!formRef.current) return;
         const formData = new FormData(formRef.current);
@@ -41,8 +41,6 @@ export default function RegisterForm() {
         if (!validateEmail(email)) newErrors.email = 'Email inválido';
         if (!validatePassword(password, confirmPassword)) newErrors.password = 'Contraseña inválida';
 
-        setErrors(newErrors);
-
         if (Object.keys(newErrors).length === 0) {
             setIsLoading(true);
             const result = await registerUser({
@@ -55,11 +53,11 @@ export default function RegisterForm() {
 
             setIsLoading(false);
             formRef.current.reset();
-            setErrors({});
 
             if (result.error) return toast.error(result.error.message)
         }
 
+        setErrors(newErrors);
         formRef.current.reset();
         setIsLoading(false);
         router.refresh()
