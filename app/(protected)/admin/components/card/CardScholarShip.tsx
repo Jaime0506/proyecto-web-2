@@ -1,11 +1,11 @@
-import { IScholarshipCall } from '@/types/scholarship-calls';
+import { IScholarshipCallWithUser } from '@/types/scholarship-calls';
 import { Card, CardBody, CardHeader, Divider } from '@heroui/react';
 import { format } from 'date-fns';
 import { CalendarDays, FileText } from 'lucide-react';
 import { MouseEvent } from 'react'
 
 interface CardScholarShipProps {
-    call: IScholarshipCall;
+    call: IScholarshipCallWithUser;
     handleOnOpenDocument: (e: MouseEvent<HTMLButtonElement, globalThis.MouseEvent>, documentUrl?: string) => void;
 }
 

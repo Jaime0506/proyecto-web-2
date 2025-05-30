@@ -27,21 +27,21 @@ export default function RegisterForm() {
         if (!formRef.current) return;
         const formData = new FormData(formRef.current);
 
-        setIsLoading(true);
-
+        
         const { firstName, lastName, cedula, email, password, confirmPassword } = extractDataFormRegister(formData);
-
+        
         const newErrors: IErrorRegister = {};
-
+        
         if (!validateText(firstName)) newErrors.first_name = 'Nombre inválido';
         if (!validateText(lastName)) newErrors.last_name = 'Apellido inválido';
         if (!validateCedula(cedula)) newErrors.national_id = 'Cédula inválida';
         if (!validateEmail(email)) newErrors.email = 'Email inválido';
         if (!validatePassword(password, confirmPassword)) newErrors.password = 'Contraseña inválida';
-
+        
         setErrors(newErrors);
-
+        
         if (Object.keys(newErrors).length === 0) {
+            setIsLoading(true);
             const result = await registerUser({
                 email,
                 password,

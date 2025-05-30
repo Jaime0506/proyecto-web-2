@@ -1,13 +1,9 @@
-import { getApplications } from "@/actions/admin/actions"
+import EvaluateListPage from "../components/list/EvaluateListPage";
 
 export default async function ApplicationsPage() {
-    const { data: applications, error } = await getApplications()
-
-    if (error) {
-        return <div>No hay aplicaciones</div>;
-    }
-
     return (
-        <div>page</div>
+        <div>
+            <EvaluateListPage />
+        </div>
     )
 }

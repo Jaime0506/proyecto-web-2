@@ -11,15 +11,14 @@
 
 /* 🧱 Scrollbar global personalizado */
 * {
-    scrollbar-width: thin;
     /* Firefox */
     scrollbar-color: var(--color-primary) transparent;
 }
 
-::-webkit-scrollbar {
+/* ::-webkit-scrollbar {
     width: 6px;
     height: 6px;
-}
+} */
 
 /* Estilo del "pulgar" que se mueve */
 ::-webkit-scrollbar-thumb {
@@ -27,7 +26,6 @@
     border-radius: 8px;
     min-height: 24px;
     border: 2px solid transparent;
-    /* Espacio interno para que no se vea pegado */
 }
 
 /* Oculta el fondo (track) */

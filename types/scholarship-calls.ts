@@ -17,7 +17,10 @@ export interface IScholarshipCall {
     description?: string;
     guideline_document?: string;
     created_by?: string;
-    users: IUserBasic;
+}
+
+export interface IScholarshipCallWithUser extends IScholarshipCall {
+    users?: IUserBasic;
 }
 
 export type IScholarshipCallForm = Omit<IScholarshipCall, "id" | "created_by">;
