@@ -48,9 +48,9 @@ export const applicationService = {
     const applicationsWithUrls = await Promise.all(
       (data as Application[]).map(async (application) => {
         const urls = await Promise.all([
-          application.icfes_result_pdf ? this.getFileUrl(application.icfes_result_pdf) : null,
-          application.stratum_proof_pdf ? this.getFileUrl(application.stratum_proof_pdf) : null,
-          application.motivation_letter_pdf ? this.getFileUrl(application.motivation_letter_pdf) : null,
+          application.icfes_result_pdf ? this.getFileUrl(application.icfes_result_pdf) : undefined,
+          application.stratum_proof_pdf ? this.getFileUrl(application.stratum_proof_pdf) : undefined,
+          application.motivation_letter_pdf ? this.getFileUrl(application.motivation_letter_pdf) : undefined,
         ])
 
         return {
@@ -71,6 +71,6 @@ export const applicationService = {
       .from('scholarshipdocs')
       .createSignedUrl(filePath, 3600) // URL válida por 1 hora
 
-    return data?.signedUrl || null
+    return data?.signedUrl || undefined
   }
 } 
