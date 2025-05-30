@@ -30,7 +30,6 @@ export default function RegisterForm() {
         if (!formRef.current) return;
         const formData = new FormData(formRef.current);
 
-
         const { firstName, lastName, cedula, email, password, confirmPassword } = extractDataFormRegister(formData);
 
         const newErrors: IErrorRegister = {};
@@ -40,8 +39,15 @@ export default function RegisterForm() {
         if (!validateCedula(cedula)) newErrors.national_id = 'Cédula inválida';
         if (!validateEmail(email)) newErrors.email = 'Email inválido';
         if (!validatePassword(password, confirmPassword)) newErrors.password = 'Contraseña inválida';
+        if (password !== confirmPassword) newErrors.confirm_password = 'Las contraseñas no coinciden';
 
-        if (Object.keys(newErrors).length === 0) {
+        // Si hay errores, solo actualiza el estado y no sigas
+        if (Object.keys(newErrors).length > 0) {
+            setErrors(newErrors);
+            return;
+        }
+
+        try {
             setIsLoading(true);
             const result = await registerUser({
                 email,
@@ -51,17 +57,21 @@ export default function RegisterForm() {
                 national_id: cedula,
             });
 
-            setIsLoading(false);
+            if (result.error) {
+                toast.error(result.error.message);
+                return;
+            }
+
             formRef.current.reset();
-
-            if (result.error) return toast.error(result.error.message)
+            router.refresh();
+        } catch (error) {
+            console.log(error)
+            toast.error("Ocurrió un error al registrar.");
+        } finally {
+            setIsLoading(false);
         }
-
-        setErrors(newErrors);
-        formRef.current.reset();
-        setIsLoading(false);
-        router.refresh()
     };
+
 
     useEffect(() => {
         console.log(errors)
