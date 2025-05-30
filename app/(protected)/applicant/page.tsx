@@ -4,6 +4,7 @@ import { AcademicCapIcon, SparklesIcon, UserCircleIcon } from '@heroicons/react/
 import { useEffect, useState } from 'react'
 import { createClient } from '@/lib/supabase/client'
 
+
 export default function AspirantHomePage() {
   const [fullName, setFullName] = useState<string | null>(null)
 
