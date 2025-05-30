@@ -31,12 +31,40 @@ export const scholarshipService = {
     return data as ScholarshipCall
   },
 
+  async hasAlreadyApplied(callId: string) {
+    const supabase = createClient()
+    const { data: { user } } = await supabase.auth.getUser()
+
+    if (!user) {
+      throw new Error('Debes iniciar sesión para aplicar')
+    }
+
+    const { data, error } = await supabase
+      .from('applications')
+      .select('id')
+      .eq('user_id', user.id)
+      .eq('call_id', callId)
+      .single()
+
+    if (error && error.code !== 'PGRST116') { // PGRST116 is the error code for no rows returned
+      throw error
+    }
+
+    return !!data
+  },
+
   async submitApplication(callId: string, formData: ApplicationForm) {
     const supabase = createClient()
     const { data: { user } } = await supabase.auth.getUser()
 
     if (!user) {
       throw new Error('Debes iniciar sesión para aplicar')
+    }
+
+    // Check if user has already applied
+    const hasApplied = await this.hasAlreadyApplied(callId)
+    if (hasApplied) {
+      throw new Error('Ya has postulado a esta convocatoria')
     }
 
     const { error } = await supabase
