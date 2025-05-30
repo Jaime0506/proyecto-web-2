@@ -43,6 +43,7 @@ export function useApplicationForm(callId: string) {
     }
   }
 
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const updateFormData = (field: keyof ApplicationForm, value: any) => {
     setFormData(prev => ({
       ...prev,

@@ -27,20 +27,20 @@ export default function LoginForm() {
     const onSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
 
-        setIsLoading(true);
-
+        
         const formData = new FormData(e.currentTarget);
         const email = formData.get("email") as string;
         const password = formData.get("password") as string;
-
+        
         const newErrors: { email?: string; password?: string } = {};
-
+        
         if (!validateEmail(email)) newErrors.email = 'Email inválido';
         if (!validatePassword(password)) newErrors.password = 'Contraseña inválida';
-
+        
         setErrors(newErrors);
-
+        
         if (Object.keys(newErrors).length === 0) {
+            setIsLoading(true);
             const result = await loginUser({
                 email,
                 password,

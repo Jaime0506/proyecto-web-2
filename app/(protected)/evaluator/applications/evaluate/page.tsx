@@ -48,7 +48,7 @@ export default function EvaluateListPage() {
     }
 
     fetchCalls()
-  }, [])
+  }, [supabase])
 
   useEffect(() => {
     const fetchApplications = async () => {
@@ -73,7 +73,7 @@ export default function EvaluateListPage() {
     }
 
     fetchApplications()
-  }, [selectedCall])
+  }, [supabase, selectedCall])
 
   return (
     <div className="p-6 max-w-7xl mx-auto">
@@ -138,7 +138,7 @@ export default function EvaluateListPage() {
                     <td className="px-4 py-2 border"><a href={app.motivation_letter_pdf} target="_blank" className="text-blue-600 underline">📄</a></td>
                     <td className="px-4 py-2 border">{app.status}</td>
                     <td className="px-4 py-2 border">{app.reviewed_by ?? 'Pendiente'}</td>
-                    <td className="px-4 py-2 border">{app.reviewed_at ? new Date(app.reviewed_at).toLocaleDateString() : 'Pendiente'}</td>
+                    <td className="px-4 py-2 border">{app.reviewed_at ? new Date(app.reviewed_at).toLocaleString() : 'Pendiente'}</td>
                     <td className="px-4 py-2 border">{s ? s.rendimiento_academico : '—'}</td>
                     <td className="px-4 py-2 border">{s ? s.situacion_economica : '—'}</td>
                     <td className="px-4 py-2 border">{s ? s.motivacion : '—'}</td>

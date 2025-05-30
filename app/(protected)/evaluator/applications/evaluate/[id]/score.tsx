@@ -14,8 +14,10 @@ const criterios = [
 ]
 
 export default function ScoringPage() {
-  const { id } = useParams()
+  const params = useParams()
+  const id = params?.id as string
   const [loading, setLoading] = useState(true)
+  const [userId, setUserId] = useState<string | null>(null)
   const [scores, setScores] = useState({
     rendimiento_academico: null,
     situacion_economica: null,
@@ -24,8 +26,21 @@ export default function ScoringPage() {
   })
 
   useEffect(() => {
-    const fetchScores = async () => {
+    const fetchData = async () => {
       const supabase = createClient()
+
+      // Obtener usuario autenticado para UUID
+      const { data: authData, error: userError } = await supabase.auth.getUser()
+
+      if (userError || !authData?.user?.id) {
+        toast.error('Debes iniciar sesión para acceder')
+        setLoading(false)
+        return
+      }
+
+      setUserId(authData.user.id)
+
+      // Obtener puntajes si existen
       const { data, error } = await supabase
         .from('application_scores')
         .select('*')
@@ -47,7 +62,7 @@ export default function ScoringPage() {
       setLoading(false)
     }
 
-    if (id) fetchScores()
+    if (id) fetchData()
   }, [id])
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -62,8 +77,31 @@ export default function ScoringPage() {
     e.preventDefault()
     const supabase = createClient()
 
-    // Verificar si ya existe
-    const { data: existing, error: findError } = await supabase
+    if (!userId) {
+      toast.error('No se puede guardar sin usuario autenticado')
+      return
+    }
+
+    const now = new Date().toISOString()
+    console.log('Fecha que se va a guardar:', now)
+
+    // Actualizar la tabla applications con fecha y usuario de revisión
+    const { error: appError } = await supabase
+      .from('applications')
+      .update({
+        reviewed_at: now,
+        reviewed_by: userId,
+      })
+      .eq('id', Number(id))
+
+    if (appError) {
+      console.error('Error al actualizar aplicación:', appError)
+      toast.error('Error al actualizar la postulación')
+      return
+    }
+
+    // Verificar si ya existen puntajes
+    const { data: existing } = await supabase
       .from('application_scores')
       .select('id')
       .eq('application_id', Number(id))
@@ -73,7 +111,7 @@ export default function ScoringPage() {
     if (existing) {
       result = await supabase
         .from('application_scores')
-        .update({ ...scores })
+        .update(scores)
         .eq('application_id', Number(id))
     } else {
       result = await supabase
@@ -135,3 +173,4 @@ export default function ScoringPage() {
     </div>
   )
 }
+
