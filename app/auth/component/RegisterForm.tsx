@@ -24,6 +24,7 @@ export default function RegisterForm() {
     const toggleIsConfirmVisible = () => setIsConfirmVisible(prev => !prev);
 
     const onSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+        setErrors({});
         e.preventDefault();
 
         if (!formRef.current) return;
