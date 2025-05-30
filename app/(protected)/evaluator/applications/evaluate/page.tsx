@@ -1,9 +1,10 @@
-'use client'
+'use client' // Indica que este componente se ejecuta en el cliente, no en el servidor (requerido en Next.js App Router).
 
-import { useEffect, useState } from 'react'
-import { useRouter } from 'next/navigation'
-import { createClient } from '@/lib/supabase/client'
+import { useEffect, useState } from 'react' // Hooks para manejar estado y efectos secundarios.
+import { useRouter } from 'next/navigation' // Hook de navegación para redirigir entre páginas.
+import { createClient } from '@/lib/supabase/client' // Importa una función personalizada para crear una instancia del cliente de Supabase.
 
+// Tipo de dato para una postulación (application)
 type Application = {
   id: number
   user_id: string
@@ -25,38 +26,46 @@ type Application = {
   }[] | null
 }
 
+// Tipo de dato para una convocatoria (call)
 type Call = {
   id: number
   name: string
 }
 
 export default function EvaluateListPage() {
-  const router = useRouter()
-  const supabase = createClient()
+  const router = useRouter() // Hook para redirección
+  const supabase = createClient() // Instancia del cliente Supabase
 
+  // Estados para guardar las convocatorias, la convocatoria seleccionada, las postulaciones y estado de carga
   const [calls, setCalls] = useState<Call[]>([])
   const [selectedCall, setSelectedCall] = useState<number | null>(null)
   const [applications, setApplications] = useState<Application[]>([])
   const [loading, setLoading] = useState(false)
 
+  // Función para construir la URL pública de un archivo almacenado en Supabase
+  const getPublicUrl = (path: string) =>
+    `https://eeradvowjcydfeprtwyg.supabase.co/storage/v1/object/public/scholarshipdocs/${path}`
+
+  // useEffect para obtener las convocatorias al cargar el componente
   useEffect(() => {
     const fetchCalls = async () => {
       const { data, error } = await supabase
-        .from('scholarship_calls')
-        .select('id, name')
-      if (!error && data) setCalls(data)
+        .from('scholarship_calls') // Tabla en Supabase
+        .select('id, name') // Campos a seleccionar
+      if (!error && data) setCalls(data) // Si no hay error, se guarda el resultado
     }
 
-    fetchCalls()
+    fetchCalls() // Llama a la función
   }, [supabase])
 
+  // useEffect para obtener las postulaciones cuando se selecciona una convocatoria
   useEffect(() => {
     const fetchApplications = async () => {
-      if (!selectedCall) return
-      setLoading(true)
+      if (!selectedCall) return // No hacer nada si no hay convocatoria seleccionada
+      setLoading(true) // Mostrar estado de carga
 
       const { data, error } = await supabase
-        .from('applications')
+        .from('applications') // Tabla en Supabase
         .select(`
           *,
           application_scores (
@@ -66,19 +75,20 @@ export default function EvaluateListPage() {
             experiencia
           )
         `)
-        .eq('call_id', selectedCall)
+        .eq('call_id', selectedCall) // Filtra por convocatoria seleccionada
 
-      if (!error && data) setApplications(data)
-      setLoading(false)
+      if (!error && data) setApplications(data) // Si no hay error, guarda las postulaciones
+      setLoading(false) // Oculta el estado de carga
     }
 
-    fetchApplications()
+    fetchApplications() // Llama a la función
   }, [supabase, selectedCall])
 
   return (
     <div className="p-6 max-w-7xl mx-auto">
       <h1 className="text-3xl font-bold mb-6">Evaluar Postulaciones</h1>
 
+      {/* Selector de convocatoria */}
       <div className="mb-6">
         <label className="block font-semibold mb-2">Seleccionar convocatoria:</label>
         <select
@@ -93,13 +103,16 @@ export default function EvaluateListPage() {
         </select>
       </div>
 
+      {/* Mensaje de carga */}
       {loading && <p className="text-gray-500">Cargando postulaciones...</p>}
 
+      {/* Tabla de postulaciones */}
       {!loading && selectedCall && applications.length > 0 && (
         <div className="overflow-x-auto">
           <table className="min-w-full border border-gray-300 rounded-lg overflow-hidden text-sm">
             <thead className="bg-gray-100">
               <tr>
+                {/* Encabezados de la tabla */}
                 <th className="px-4 py-2 border">ID</th>
                 <th className="px-4 py-2 border">User ID</th>
                 <th className="px-4 py-2 border">Estrato</th>
@@ -120,6 +133,7 @@ export default function EvaluateListPage() {
               </tr>
             </thead>
             <tbody>
+              {/* Filas de la tabla: una por postulación */}
               {applications.map((app) => {
                 const s = Array.isArray(app.application_scores) ? app.application_scores[0] : null
                 const total = s
@@ -133,9 +147,39 @@ export default function EvaluateListPage() {
                     <td className="px-4 py-2 border">{app.user_id}</td>
                     <td className="px-4 py-2 border">{app.socioeconomic_stratum}</td>
                     <td className="px-4 py-2 border">{app.icfes_result_num}</td>
-                    <td className="px-4 py-2 border"><a href={app.icfes_result_pdf} target="_blank" className="text-blue-600 underline">📄</a></td>
-                    <td className="px-4 py-2 border"><a href={app.stratum_proof_pdf} target="_blank" className="text-blue-600 underline">📄</a></td>
-                    <td className="px-4 py-2 border"><a href={app.motivation_letter_pdf} target="_blank" className="text-blue-600 underline">📄</a></td>
+                    <td className="px-4 py-2 border">
+                      {/* Enlace al PDF del resultado ICFES */}
+                      <a
+                        href={getPublicUrl(app.icfes_result_pdf)}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="text-blue-600 underline"
+                      >
+                        📄
+                      </a>
+                    </td>
+                    <td className="px-4 py-2 border">
+                      {/* Enlace al PDF de prueba de estrato */}
+                      <a
+                        href={getPublicUrl(app.stratum_proof_pdf)}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="text-blue-600 underline"
+                      >
+                        📄
+                      </a>
+                    </td>
+                    <td className="px-4 py-2 border">
+                      {/* Enlace a la carta de motivación */}
+                      <a
+                        href={getPublicUrl(app.motivation_letter_pdf)}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="text-blue-600 underline"
+                      >
+                        📄
+                      </a>
+                    </td>
                     <td className="px-4 py-2 border">{app.status}</td>
                     <td className="px-4 py-2 border">{app.reviewed_by ?? 'Pendiente'}</td>
                     <td className="px-4 py-2 border">{app.reviewed_at ? new Date(app.reviewed_at).toLocaleString() : 'Pendiente'}</td>
@@ -146,6 +190,7 @@ export default function EvaluateListPage() {
                     <td className="px-4 py-2 border">{total ?? '—'}</td>
                     <td className="px-4 py-2 border">{promedio ?? '—'}</td>
                     <td className="px-4 py-2 border">
+                      {/* Botón para evaluar la postulación */}
                       <button
                         className="bg-red-600 hover:bg-red-700 text-white px-3 py-1 rounded"
                         onClick={() => router.push(`/evaluator/applications/evaluate/${app.id}`)}
@@ -161,6 +206,7 @@ export default function EvaluateListPage() {
         </div>
       )}
 
+      {/* Mensaje si no hay postulaciones */}
       {!loading && selectedCall && applications.length === 0 && (
         <p className="text-gray-500">No hay postulaciones para esta convocatoria.</p>
       )}
