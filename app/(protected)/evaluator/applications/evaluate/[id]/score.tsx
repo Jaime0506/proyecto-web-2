@@ -94,14 +94,13 @@ export default function ScoringPage() {
     const now = new Date().toISOString() // Fecha actual en ISO
 
     // Actualizar la tabla de aplicaciones con la fecha y usuario que revisó
-    const { data: appData, error: appError } = await supabase
+    const { error: appError } = await supabase
       .from('applications')
       .update({
         reviewed_at: now,
         reviewed_by: userId,
       })
       .eq('id', Number(id))
-      .select()
 
     if (appError) {
       console.error('Error al actualizar aplicación:', appError)
