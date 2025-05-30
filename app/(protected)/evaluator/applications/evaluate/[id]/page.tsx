@@ -1,77 +1,120 @@
 'use client'
 
 import { useEffect, useState } from 'react'
-import { useParams, useRouter } from 'next/navigation'
+import { useParams } from 'next/navigation'
 import { createClient } from '@/lib/supabase/client'
-import { ArrowPathIcon } from '@heroicons/react/24/outline'
 import toast, { Toaster } from 'react-hot-toast'
+import { ArrowPathIcon } from '@heroicons/react/24/outline'
 
-export default function ClassifyApplicationPage() {
+const criterios = [
+  { name: 'rendimiento_academico', label: '📚 Rendimiento Académico' },
+  { name: 'situacion_economica', label: '💸 Situación Económica' },
+  { name: 'motivacion', label: '🔥 Motivación' },
+  { name: 'experiencia', label: '🛠️ Experiencia' }
+]
+
+export default function ClassifyAndScoreApplicationPage() {
   const { id } = useParams()
-  const router = useRouter()
+  const [loading, setLoading] = useState(true)
   const [status, setStatus] = useState('IN_REVIEW')
   const [userId, setUserId] = useState('')
-  const [loading, setLoading] = useState(true)
+  const [scores, setScores] = useState({
+    rendimiento_academico: 0,
+    situacion_economica: 0,
+    motivacion: 0,
+    experiencia: 0,
+  })
 
   useEffect(() => {
-    const fetchStatus = async () => {
+    const fetchData = async () => {
       const supabase = createClient()
-      const { data, error } = await supabase
+
+      // Traer estado y user_id
+      const { data: appData, error: appError } = await supabase
         .from('applications')
         .select('status, user_id')
         .eq('id', Number(id))
         .single()
 
-      if (error) {
-        console.error('Error al obtener el estado:', error)
-        toast.error('Error al cargar los datos de la postulación', {
-          style: {
-            background: '#f87171',
-            color: 'white',
-            borderRadius: '8px',
-          },
-          icon: '⚠️',
+      if (appError) {
+        console.error('Error al obtener el estado:', appError)
+        toast.error('Error al cargar datos de la postulación')
+      } else if (appData) {
+        setStatus(appData.status || 'IN_REVIEW')
+        setUserId(appData.user_id)
+      }
+
+      // Traer puntajes si existen
+      const { data: scoreData, error: scoreError } = await supabase
+        .from('application_scores')
+        .select('*')
+        .eq('application_id', Number(id))
+        .single()
+
+      if (scoreError && scoreError.code !== 'PGRST116') {
+        console.error('Error al cargar puntajes:', scoreError)
+        toast.error('Error al cargar los puntajes')
+      } else if (scoreData) {
+        setScores({
+          rendimiento_academico: scoreData.rendimiento_academico,
+          situacion_economica: scoreData.situacion_economica,
+          motivacion: scoreData.motivacion,
+          experiencia: scoreData.experiencia
         })
-      } else if (data) {
-        // Usar valor tal cual para que coincida con las opciones
-        setStatus(data.status || 'IN_REVIEW')
-        setUserId(data.user_id)
       }
 
       setLoading(false)
     }
 
-    if (id) fetchStatus()
+    if (id) fetchData()
   }, [id])
 
-  const handleUpdate = async (e: React.FormEvent) => {
+  const handleScoreChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const { name, value } = e.target
+    setScores((prev) => ({ ...prev, [name]: Number(value) }))
+  }
+
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
     const supabase = createClient()
 
-    const { error } = await supabase
+    // Guardar estado
+    const { error: statusError } = await supabase
       .from('applications')
       .update({ status })
       .eq('id', Number(id))
 
-    if (error) {
-      console.error('Error al actualizar estado:', error)
-      toast.error('No se pudo guardar la evaluación', {
-        style: {
-          background: '#f87171',
-          color: 'white',
-          borderRadius: '8px',
-        },
-        icon: '⚠️',
-      })
+    if (statusError) {
+      console.error('Error al actualizar estado:', statusError)
+      toast.error('Error al guardar el estado')
     } else {
-      toast.success('Evaluación guardada correctamente', {
-        style: {
-          background: '#4ade80',
-          color: 'white',
-          borderRadius: '8px',
-        },
-        icon: '✅',
-      })
+      toast.success('Estado guardado', { icon: '✅' })
+    }
+
+    // Guardar puntajes
+    const { data: existingScore } = await supabase
+      .from('application_scores')
+      .select('id')
+      .eq('application_id', Number(id))
+      .single()
+
+    let scoreResult
+    if (existingScore) {
+      scoreResult = await supabase
+        .from('application_scores')
+        .update({ ...scores })
+        .eq('application_id', Number(id))
+    } else {
+      scoreResult = await supabase
+        .from('application_scores')
+        .insert({ application_id: Number(id), ...scores })
+    }
+
+    if (scoreResult.error) {
+      console.error(scoreResult.error)
+      toast.error('❌ Error al guardar los puntajes')
+    } else {
+      toast.success('✅ Puntajes guardados correctamente')
     }
   }
 
@@ -85,25 +128,16 @@ export default function ClassifyApplicationPage() {
   }
 
   return (
-    <div className="p-6 max-w-lg mx-auto bg-white rounded-xl shadow-md border">
-      <Toaster
-        position="top-right"
-        toastOptions={{
-          duration: 3000,
-          style: {
-            fontSize: '0.9rem',
-            borderRadius: '8px',
-          },
-        }}
-      />
+    <div className="p-6 max-w-xl mx-auto bg-white rounded-xl shadow-md border">
+      <Toaster position="top-right" />
       <h1 className="text-2xl font-bold text-gray-800 mb-2 text-center">
-        Clasificar Postulación #{id}
+        Postulación #{id}
       </h1>
       <p className="text-center text-gray-600 mb-6">
         Usuario: <strong>{userId?.slice(0, 8)}...</strong>
       </p>
 
-      <form onSubmit={handleUpdate} className="space-y-6">
+      <form onSubmit={handleSubmit} className="space-y-6">
         <div>
           <label htmlFor="status" className="block text-sm font-medium text-gray-700 mb-1">
             Estado de la postulación
@@ -122,11 +156,32 @@ export default function ClassifyApplicationPage() {
           </select>
         </div>
 
+        <div className="grid grid-cols-1 gap-4">
+          {criterios.map(({ name, label }) => (
+            <div key={name}>
+              <label htmlFor={name} className="block text-sm font-medium text-gray-700 mb-1">
+                {label}
+              </label>
+              <input
+                type="number"
+                id={name}
+                name={name}
+                value={scores[name as keyof typeof scores] ?? ''}
+                onChange={handleScoreChange}
+                min={0}
+                max={100}
+                required
+                className="w-full border p-2 rounded-md"
+              />
+            </div>
+          ))}
+        </div>
+
         <button
           type="submit"
-          className="w-full bg-red-600 hover:bg-red-700 text-white font-semibold py-2 px-4 rounded-md shadow"
+          className="w-full bg-green-600 hover:bg-green-700 text-white font-semibold py-2 px-4 rounded-md shadow"
         >
-          Guardar clasificación
+          Guardar todo
         </button>
       </form>
     </div>
