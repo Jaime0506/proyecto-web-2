@@ -8,6 +8,7 @@ import { IErrorRegister } from "@/types/auth";
 import { validateCedula, validateEmail, validatePassword, validateText } from "@/utils/forms/validateForm";
 import { extractDataFormRegister } from "@/utils/forms/extractDataFormRegister";
 import { registerUser } from "@/actions/auth/register";
+import { useRouter } from "next/navigation";
 import { toast } from "sonner";
 
 export default function RegisterForm() {
@@ -15,6 +16,7 @@ export default function RegisterForm() {
     const [isVisible, setIsVisible] = useState(false);
     const [isConfirmVisible, setIsConfirmVisible] = useState(false);
     const [errors, setErrors] = useState<IErrorRegister>({});
+    const router = useRouter()
 
     const formRef = useRef<HTMLFormElement>(null);
 
@@ -27,19 +29,19 @@ export default function RegisterForm() {
         if (!formRef.current) return;
         const formData = new FormData(formRef.current);
 
-        
+
         const { firstName, lastName, cedula, email, password, confirmPassword } = extractDataFormRegister(formData);
-        
+
         const newErrors: IErrorRegister = {};
-        
+
         if (!validateText(firstName)) newErrors.first_name = 'Nombre inválido';
         if (!validateText(lastName)) newErrors.last_name = 'Apellido inválido';
         if (!validateCedula(cedula)) newErrors.national_id = 'Cédula inválida';
         if (!validateEmail(email)) newErrors.email = 'Email inválido';
         if (!validatePassword(password, confirmPassword)) newErrors.password = 'Contraseña inválida';
-        
+
         setErrors(newErrors);
-        
+
         if (Object.keys(newErrors).length === 0) {
             setIsLoading(true);
             const result = await registerUser({
@@ -56,6 +58,9 @@ export default function RegisterForm() {
 
             if (result.error) return toast.error(result.error.message)
         }
+
+        setIsLoading(false);
+        router.refresh()
     };
 
     useEffect(() => {
@@ -69,7 +74,7 @@ export default function RegisterForm() {
                     isRequired
                     type="text"
                     name="firstName"
-                    label="Nombres"
+                    label="Nombre"
                     variant="bordered"
                     radius="none"
                     classNames={{ inputWrapper: ["group-data-[focus=true]:border-primary"] }}
@@ -80,7 +85,7 @@ export default function RegisterForm() {
                     isRequired
                     type="text"
                     name="lastName"
-                    label="Apellidos"
+                    label="Apellido"
                     variant="bordered"
                     radius="none"
                     classNames={{ inputWrapper: ["group-data-[focus=true]:border-primary"] }}
